@@ -11,8 +11,8 @@ const StatusIndicator: React.FC<StatusIndicatorProps> = ({ type, text }) => {
     switch (type) {
       case 'recording':
         return {
-          bgColor: 'bg-red-500',
-          textColor: 'text-red-700',
+          bgColor: 'bg-brand-red',
+          textColor: 'text-brand-red',
           icon: (
             <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
               <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/>
@@ -23,8 +23,8 @@ const StatusIndicator: React.FC<StatusIndicatorProps> = ({ type, text }) => {
         };
       case 'confirming':
         return {
-          bgColor: 'bg-blue-500',
-          textColor: 'text-blue-700',
+          bgColor: 'bg-brand-cyan',
+          textColor: 'text-brand-deep',
           icon: (
             <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
               <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
@@ -34,8 +34,8 @@ const StatusIndicator: React.FC<StatusIndicatorProps> = ({ type, text }) => {
         };
       case 'playing':
         return {
-          bgColor: 'bg-green-500',
-          textColor: 'text-green-700',
+          bgColor: 'bg-brand-mint',
+          textColor: 'text-brand-deep',
           icon: (
             <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
               <path d="M8 5v14l11-7z"/>
@@ -45,8 +45,8 @@ const StatusIndicator: React.FC<StatusIndicatorProps> = ({ type, text }) => {
         };
       case 'processing':
         return {
-          bgColor: 'bg-yellow-500',
-          textColor: 'text-yellow-700',
+          bgColor: 'bg-brand-orange',
+          textColor: 'text-brand-deep',
           icon: (
             <svg className="w-6 h-6 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
@@ -57,8 +57,8 @@ const StatusIndicator: React.FC<StatusIndicatorProps> = ({ type, text }) => {
         };
       default:
         return {
-          bgColor: 'bg-gray-500',
-          textColor: 'text-gray-700',
+          bgColor: 'bg-brand-muted',
+          textColor: 'text-brand-ink',
           icon: null,
           defaultText: ''
         };

@@ -1,6 +1,42 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  :root {
+    --bg: #FAF7ED;
+    --surface: #FFFFFF;
+    --fg: #1A2E35;
+    --muted: #5A7A82;
+    --border: #D4E4E8;
+    --primary: #0D5C6F;
+    --accent: #EC9960;
+    --success: #A8D5BA;
+    --warning: #EC9960;
+    --danger: #D96B6B;
+  }
+
+  .dark {
+    --bg: #083D48;
+    --surface: #0C4A57;
+    --fg: #E8F0F2;
+    --muted: #8AACB4;
+    --border: #1A5C6A;
+    --primary: #2AABB8;
+    --accent: #F0A870;
+    --success: #6BC5A0;
+    --warning: #F0A870;
+    --danger: #E87C7C;
+  }
+
+  body {
+    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    background-color: var(--bg);
+    color: var(--fg);
+  }
+}
 
 /* Landscape-only enforcement for tablet kiosk */
 @media (orientation: portrait) {
@@ -11,7 +47,7 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: #000;
+    background: #083D48;
     color: #fff;
     display: flex;
     align-items: center;
@@ -20,5 +56,6 @@
     font-size: 24px;
     text-align: center;
     padding: 20px;
+    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
   }
 }

@@ -63,7 +63,7 @@ const ProcessingScreen: React.FC = () => {
   }, [location.state, recognize, navigate, addConversationMessage]);
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-brand-cream">
       <Header 
         showConversation={true}
         onConversationToggle={() => setShowConversation(!showConversation)}
@@ -79,12 +79,12 @@ const ProcessingScreen: React.FC = () => {
         {/* Center panel - Processing animation */}
         <div className="flex-1 p-8 flex items-center justify-center">
           <div className="w-full max-w-2xl">
-            <div className="bg-white rounded-xl shadow-md p-8 text-center">
+            <div className="bg-white rounded-soft shadow-soft p-8 text-center">
               <div className="mb-8">
-                <div className="animate-spin rounded-full h-24 w-24 border-b-4 border-blue-600 mx-auto"></div>
+                <div className="animate-spin rounded-full h-24 w-24 border-b-4 border-brand-teal mx-auto"></div>
               </div>
 
-              <h2 className="text-3xl font-bold text-gray-800 mb-4">
+              <h2 className="text-3xl font-bold text-brand-ink mb-4 font-display">
                 Procesando...
               </h2>
 
@@ -92,21 +92,21 @@ const ProcessingScreen: React.FC = () => {
                 <StatusIndicator type="processing" />
               </div>
 
-              <p className="text-gray-600 text-lg mb-4">
+              <p className="text-brand-muted text-lg mb-4 font-body">
                 Analizando las señas capturadas
               </p>
 
               {error && (
-                <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg mb-4">
-                  <p className="font-semibold">Error en el procesamiento</p>
-                  <p className="text-sm">{error}</p>
-                  <p className="text-sm mt-2">Regresando a la captura...</p>
+                <div className="bg-brand-red/10 border border-brand-red text-brand-red px-4 py-3 rounded-lg mb-4">
+                  <p className="font-semibold font-display">Error en el procesamiento</p>
+                  <p className="text-sm font-body">{error}</p>
+                  <p className="text-sm mt-2 font-body">Regresando a la captura...</p>
                 </div>
               )}
 
               {!error && (
-                <div className="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-r-lg">
-                  <p className="text-gray-700">
+                <div className="bg-brand-teal/10 border-l-4 border-brand-teal p-4 rounded-r-lg">
+                  <p className="text-brand-ink font-body">
                     El sistema está enviando los datos de las señas al servicio de reconocimiento 
                     y esperando la interpretación.
                   </p>
@@ -117,13 +117,13 @@ const ProcessingScreen: React.FC = () => {
         </div>
 
         {/* Right panel - Conversation preview */}
-        <div className="w-80 bg-white border-l border-gray-200 p-6">
-          <h3 className="text-lg font-semibold text-gray-800 mb-4">
+        <div className="w-80 bg-white border-l border-brand-mist p-6">
+          <h3 className="text-lg font-semibold text-brand-ink mb-4 font-display">
             Conversación actual
           </h3>
           <div className="space-y-3 max-h-[calc(100vh-200px)] overflow-y-auto">
             {conversationHistory.length === 0 ? (
-              <p className="text-gray-500 text-sm text-center py-4">
+              <p className="text-brand-muted text-sm text-center py-4 font-body">
                 No hay mensajes aún
               </p>
             ) : (
@@ -132,12 +132,12 @@ const ProcessingScreen: React.FC = () => {
                   key={message.id}
                   className={`p-3 rounded-lg ${
                     message.type === 'user'
-                      ? 'bg-blue-100 text-blue-800'
-                      : 'bg-gray-100 text-gray-800'
+                      ? 'bg-brand-teal/10 text-brand-teal'
+                      : 'bg-brand-cream text-brand-ink'
                   }`}
                 >
-                  <p className="text-sm">{message.text}</p>
-                  <p className="text-xs mt-1 opacity-70">
+                  <p className="text-sm font-body">{message.text}</p>
+                  <p className="text-xs mt-1 opacity-70 font-body">
                     {new Date(message.timestamp).toLocaleTimeString('es-MX', {
                       hour: '2-digit',
                       minute: '2-digit'

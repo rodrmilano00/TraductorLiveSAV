@@ -31,7 +31,7 @@ const CameraCaptureScreen: React.FC = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-brand-cream">
       <Header 
         showConversation={true}
         onConversationToggle={() => setShowConversation(!showConversation)}
@@ -47,9 +47,9 @@ const CameraCaptureScreen: React.FC = () => {
         {/* Center panel - Camera capture */}
         <div className="flex-1 p-8 flex items-center justify-center">
           <div className="w-full max-w-4xl">
-            <div className="bg-white rounded-xl shadow-md p-6">
+            <div className="bg-white rounded-soft shadow-soft p-6">
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-2xl font-bold text-gray-800">
+                <h2 className="text-2xl font-bold text-brand-ink font-display">
                   Captura de Señas
                 </h2>
                 <StatusIndicator type="recording" />
@@ -73,35 +73,35 @@ const CameraCaptureScreen: React.FC = () => {
                   <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50">
                     <div className="text-white text-center">
                       <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto mb-4"></div>
-                      <p>Iniciando cámara...</p>
+                      <p className="font-body">Iniciando cámara...</p>
                     </div>
                   </div>
                 )}
 
                 {/* Error overlay */}
                 {error && (
-                  <div className="absolute inset-0 flex items-center justify-center bg-red-900 bg-opacity-90">
+                  <div className="absolute inset-0 flex items-center justify-center bg-brand-deep bg-opacity-90">
                     <div className="text-white text-center p-6">
                       <svg className="w-12 h-12 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                       </svg>
-                      <p className="text-lg font-semibold mb-2">Error de cámara</p>
-                      <p className="text-sm">{error}</p>
+                      <p className="text-lg font-semibold mb-2 font-display">Error de cámara</p>
+                      <p className="text-sm font-body">{error}</p>
                     </div>
                   </div>
                 )}
 
                 {/* Landmark detection indicator */}
                 {isCapturing && landmarks && (
-                  <div className="absolute top-4 left-4 bg-green-500 text-white px-3 py-1 rounded-full text-sm font-semibold">
+                  <div className="absolute top-4 left-4 bg-brand-mint text-brand-deep px-3 py-1 rounded-full text-sm font-semibold font-display">
                     ✋ Mano detectada
                   </div>
                 )}
               </div>
 
               {/* Instructions */}
-              <div className="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-r-lg mb-6">
-                <p className="text-gray-700">
+              <div className="bg-brand-teal/10 border-l-4 border-brand-teal p-4 rounded-r-lg mb-6">
+                <p className="text-brand-ink font-body">
                   <strong>Instrucciones:</strong> Coloque su mano frente a la cámara para realizar las señas. 
                   El sistema detectará los movimientos y los traducirá a texto.
                 </p>
@@ -112,7 +112,7 @@ const CameraCaptureScreen: React.FC = () => {
                 <button
                   onClick={handleTerminateCapture}
                   disabled={!isCapturing || !landmarks}
-                  className="bg-red-600 hover:bg-red-700 disabled:bg-gray-400 text-white font-bold text-xl px-12 py-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 min-h-[64px]"
+                  className="bg-brand-red hover:bg-brand-red/90 disabled:bg-brand-muted text-white font-bold text-xl px-12 py-4 rounded-soft shadow-soft hover:shadow-lg transition-all duration-200 min-h-[64px] font-display"
                   style={{ minHeight: '64px' }}
                 >
                   Terminar
@@ -120,7 +120,7 @@ const CameraCaptureScreen: React.FC = () => {
               </div>
 
               {!landmarks && isCapturing && (
-                <p className="text-center text-gray-500 mt-4">
+                <p className="text-center text-brand-muted mt-4 font-body">
                   Esperando detección de mano...
                 </p>
               )}
@@ -129,13 +129,13 @@ const CameraCaptureScreen: React.FC = () => {
         </div>
 
         {/* Right panel - Conversation preview */}
-        <div className="w-80 bg-white border-l border-gray-200 p-6">
-          <h3 className="text-lg font-semibold text-gray-800 mb-4">
+        <div className="w-80 bg-white border-l border-brand-mist p-6">
+          <h3 className="text-lg font-semibold text-brand-ink mb-4 font-display">
             Conversación actual
           </h3>
           <div className="space-y-3 max-h-[calc(100vh-200px)] overflow-y-auto">
             {conversationHistory.length === 0 ? (
-              <p className="text-gray-500 text-sm text-center py-4">
+              <p className="text-brand-muted text-sm text-center py-4 font-body">
                 No hay mensajes aún
               </p>
             ) : (
@@ -144,12 +144,12 @@ const CameraCaptureScreen: React.FC = () => {
                   key={message.id}
                   className={`p-3 rounded-lg ${
                     message.type === 'user'
-                      ? 'bg-blue-100 text-blue-800'
-                      : 'bg-gray-100 text-gray-800'
+                      ? 'bg-brand-teal/10 text-brand-teal'
+                      : 'bg-brand-cream text-brand-ink'
                   }`}
                 >
-                  <p className="text-sm">{message.text}</p>
-                  <p className="text-xs mt-1 opacity-70">
+                  <p className="text-sm font-body">{message.text}</p>
+                  <p className="text-xs mt-1 opacity-70 font-body">
                     {new Date(message.timestamp).toLocaleTimeString('es-MX', {
                       hour: '2-digit',
                       minute: '2-digit'

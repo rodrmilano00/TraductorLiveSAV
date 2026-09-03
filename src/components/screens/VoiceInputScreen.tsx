@@ -76,7 +76,7 @@ const VoiceInputScreen: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-brand-cream">
       <Header 
         showConversation={true}
         onConversationToggle={() => setShowConversation(!showConversation)}
@@ -94,8 +94,8 @@ const VoiceInputScreen: React.FC = () => {
           <div className="w-full max-w-2xl">
             {!isConfirming ? (
               /* Recording state */
-              <div className="bg-white rounded-xl shadow-md p-8 text-center">
-                <h2 className="text-2xl font-bold text-gray-800 mb-6">
+              <div className="bg-white rounded-soft shadow-soft p-8 text-center">
+                <h2 className="text-2xl font-bold text-brand-ink mb-6 font-display">
                   Hable para traducir
                 </h2>
                 
@@ -104,8 +104,8 @@ const VoiceInputScreen: React.FC = () => {
                     onClick={isRecording ? handleStopRecording : handleStartRecording}
                     className={`w-32 h-32 rounded-full flex items-center justify-center mx-auto transition-all duration-200 ${
                       isRecording 
-                        ? 'bg-red-500 hover:bg-red-600 animate-pulse' 
-                        : 'bg-blue-600 hover:bg-blue-700'
+                        ? 'bg-brand-red hover:bg-brand-red/90 animate-pulse' 
+                        : 'bg-brand-teal hover:bg-brand-deep'
                     }`}
                   >
                     {isRecording ? (
@@ -126,30 +126,30 @@ const VoiceInputScreen: React.FC = () => {
                 </div>
 
                 {transcript && (
-                  <div className="bg-gray-100 rounded-lg p-4 mb-4">
-                    <p className="text-gray-700 text-lg">{transcript}</p>
+                  <div className="bg-brand-cream rounded-lg p-4 mb-4">
+                    <p className="text-brand-ink text-lg font-body">{transcript}</p>
                   </div>
                 )}
 
                 {error && (
-                  <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg mb-4">
+                  <div className="bg-brand-red/10 border border-brand-red text-brand-red px-4 py-3 rounded-lg mb-4">
                     {error}
                   </div>
                 )}
 
-                <p className="text-gray-500 text-sm">
+                <p className="text-brand-muted text-sm font-body">
                   {isRecording ? 'Presione para detener la grabación' : 'Presione para comenzar a grabar'}
                 </p>
               </div>
             ) : (
               /* Confirmation state */
-              <div className="bg-white rounded-xl shadow-md p-8 text-center">
-                <h2 className="text-2xl font-bold text-gray-800 mb-6">
+              <div className="bg-white rounded-soft shadow-soft p-8 text-center">
+                <h2 className="text-2xl font-bold text-brand-ink mb-6 font-display">
                   Confirmar transcripción
                 </h2>
 
-                <div className="bg-blue-50 border-2 border-blue-200 rounded-lg p-6 mb-6">
-                  <p className="text-xl text-gray-800 font-medium">
+                <div className="bg-brand-teal/10 border-2 border-brand-teal rounded-lg p-6 mb-6">
+                  <p className="text-xl text-brand-ink font-medium font-body">
                     "{transcript}"
                   </p>
                 </div>
@@ -161,7 +161,7 @@ const VoiceInputScreen: React.FC = () => {
                 <div className="flex gap-4 justify-center">
                   <button
                     onClick={handleRetry}
-                    className="bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold px-8 py-4 rounded-lg transition-colors min-h-[64px]"
+                    className="bg-brand-muted hover:bg-brand-soft text-white font-semibold px-8 py-4 rounded-soft transition-colors min-h-[64px] font-body"
                     style={{ minHeight: '64px' }}
                   >
                     Reintentar
@@ -169,7 +169,7 @@ const VoiceInputScreen: React.FC = () => {
                   
                   <button
                     onClick={handleConfirm}
-                    className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-4 rounded-lg transition-colors min-h-[64px]"
+                    className="bg-brand-teal hover:bg-brand-deep text-white font-semibold px-8 py-4 rounded-soft transition-colors min-h-[64px] font-display"
                     style={{ minHeight: '64px' }}
                   >
                     Confirmar
@@ -181,23 +181,23 @@ const VoiceInputScreen: React.FC = () => {
         </div>
 
         {/* Right panel - Selected category preview */}
-        <div className="w-80 bg-white border-l border-gray-200 p-6">
-          <h3 className="text-lg font-semibold text-gray-800 mb-4">
+        <div className="w-80 bg-white border-l border-brand-mist p-6">
+          <h3 className="text-lg font-semibold text-brand-ink mb-4 font-display">
             Trámite seleccionado
           </h3>
           {selectedCategory && (
-            <div className="bg-gray-50 rounded-lg p-4">
+            <div className="bg-brand-cream rounded-lg p-4">
               <div className="flex items-center gap-3 mb-3">
-                <div className="bg-blue-100 p-2 rounded-lg">
-                  <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div className="bg-brand-teal/10 p-2 rounded-lg">
+                  <svg className="w-6 h-6 text-brand-teal" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                   </svg>
                 </div>
-                <h4 className="font-semibold text-gray-800">
+                <h4 className="font-semibold text-brand-ink font-display">
                   {selectedCategory.name}
                 </h4>
               </div>
-              <p className="text-sm text-gray-600">
+              <p className="text-sm text-brand-muted font-body">
                 {selectedCategory.description}
               </p>
             </div>

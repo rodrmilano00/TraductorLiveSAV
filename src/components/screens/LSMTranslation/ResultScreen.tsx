@@ -79,7 +79,7 @@ const ResultScreen: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-brand-cream">
       <Header 
         showConversation={true}
         onConversationToggle={() => setShowConversation(!showConversation)}
@@ -95,18 +95,18 @@ const ResultScreen: React.FC = () => {
         {/* Center panel - Result display */}
         <div className="flex-1 p-8 flex items-center justify-center">
           <div className="w-full max-w-3xl">
-            <div className="bg-white rounded-xl shadow-md p-8">
-              <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">
+            <div className="bg-white rounded-soft shadow-soft p-8">
+              <h2 className="text-2xl font-bold text-brand-ink mb-6 text-center font-display">
                 Frase Interpretada
               </h2>
 
               {/* Main result display */}
-              <div className="bg-green-50 border-2 border-green-200 rounded-lg p-8 mb-6 text-center">
-                <p className="text-4xl font-bold text-gray-800 mb-2">
+              <div className="bg-brand-mint/20 border-2 border-brand-mint rounded-lg p-8 mb-6 text-center">
+                <p className="text-4xl font-bold text-brand-ink mb-2 font-display">
                   {result}
                 </p>
                 {confidence && (
-                  <p className="text-sm text-gray-600">
+                  <p className="text-sm text-brand-muted font-body">
                     Confianza: {Math.round(confidence * 100)}%
                   </p>
                 )}
@@ -123,11 +123,11 @@ const ResultScreen: React.FC = () => {
 
               {/* Top K alternatives if available */}
               {topK && topK.length > 1 && (
-                <div className="bg-gray-50 rounded-lg p-4 mb-6">
-                  <h3 className="text-sm font-semibold text-gray-700 mb-2">Otras posibles letras:</h3>
+                <div className="bg-brand-cream rounded-lg p-4 mb-6">
+                  <h3 className="text-sm font-semibold text-brand-ink mb-2 font-display">Otras posibles letras:</h3>
                   <div className="flex gap-2 flex-wrap">
                     {topK.slice(1, 4).map((alt, index) => (
-                      <span key={index} className="bg-white px-3 py-1 rounded-full text-sm border">
+                      <span key={index} className="bg-white px-3 py-1 rounded-full text-sm border border-brand-mist font-body">
                         {alt.letter} ({Math.round(alt.confidence * 100)}%)
                       </span>
                     ))}
@@ -139,7 +139,7 @@ const ResultScreen: React.FC = () => {
               <div className="grid grid-cols-2 gap-4 mb-6">
                 <button
                   onClick={handleRepeat}
-                  className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-4 rounded-lg transition-colors flex items-center justify-center gap-2 min-h-[64px]"
+                  className="bg-brand-teal hover:bg-brand-deep text-white font-semibold px-6 py-4 rounded-soft transition-colors flex items-center justify-center gap-2 min-h-[64px] font-body"
                   style={{ minHeight: '64px' }}
                 >
                   <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -150,7 +150,7 @@ const ResultScreen: React.FC = () => {
 
                 <button
                   onClick={handleAdd}
-                  className="bg-green-600 hover:bg-green-700 text-white font-semibold px-6 py-4 rounded-lg transition-colors flex items-center justify-center gap-2 min-h-[64px]"
+                  className="bg-brand-mint hover:bg-brand-mint/80 text-brand-deep font-semibold px-6 py-4 rounded-soft transition-colors flex items-center justify-center gap-2 min-h-[64px] font-body"
                   style={{ minHeight: '64px' }}
                 >
                   <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -161,7 +161,7 @@ const ResultScreen: React.FC = () => {
 
                 <button
                   onClick={handleScan}
-                  className="bg-purple-600 hover:bg-purple-700 text-white font-semibold px-6 py-4 rounded-lg transition-colors flex items-center justify-center gap-2 min-h-[64px]"
+                  className="bg-brand-deep hover:bg-brand-card text-white font-semibold px-6 py-4 rounded-soft transition-colors flex items-center justify-center gap-2 min-h-[64px] font-body"
                   style={{ minHeight: '64px' }}
                 >
                   <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -173,7 +173,7 @@ const ResultScreen: React.FC = () => {
 
                 <button
                   onClick={handleContinue}
-                  className="bg-orange-600 hover:bg-orange-700 text-white font-semibold px-6 py-4 rounded-lg transition-colors flex items-center justify-center gap-2 min-h-[64px]"
+                  className="bg-brand-orange hover:bg-brand-orange/90 text-white font-semibold px-6 py-4 rounded-soft transition-colors flex items-center justify-center gap-2 min-h-[64px] font-display"
                   style={{ minHeight: '64px' }}
                 >
                   <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -184,8 +184,8 @@ const ResultScreen: React.FC = () => {
               </div>
 
               {/* Note about current limitations */}
-              <div className="bg-yellow-50 border-l-4 border-yellow-500 p-4 rounded-r-lg">
-                <p className="text-gray-700 text-sm">
+              <div className="bg-brand-orange/10 border-l-4 border-brand-orange p-4 rounded-r-lg">
+                <p className="text-brand-ink text-sm font-body">
                   <strong>Nota:</strong> El sistema actual reconoce letras individuales del alfabeto LSM. 
                   Para frases completas, el usuario necesita deletrear letra por letra.
                 </p>
@@ -195,13 +195,13 @@ const ResultScreen: React.FC = () => {
         </div>
 
         {/* Right panel - Conversation preview */}
-        <div className="w-80 bg-white border-l border-gray-200 p-6">
-          <h3 className="text-lg font-semibold text-gray-800 mb-4">
+        <div className="w-80 bg-white border-l border-brand-mist p-6">
+          <h3 className="text-lg font-semibold text-brand-ink mb-4 font-display">
             Conversación actual
           </h3>
           <div className="space-y-3 max-h-[calc(100vh-200px)] overflow-y-auto">
             {conversationHistory.length === 0 ? (
-              <p className="text-gray-500 text-sm text-center py-4">
+              <p className="text-brand-muted text-sm text-center py-4 font-body">
                 No hay mensajes aún
               </p>
             ) : (
@@ -210,12 +210,12 @@ const ResultScreen: React.FC = () => {
                   key={message.id}
                   className={`p-3 rounded-lg ${
                     message.type === 'user'
-                      ? 'bg-blue-100 text-blue-800'
-                      : 'bg-gray-100 text-gray-800'
+                      ? 'bg-brand-teal/10 text-brand-teal'
+                      : 'bg-brand-cream text-brand-ink'
                   }`}
                 >
-                  <p className="text-sm">{message.text}</p>
-                  <p className="text-xs mt-1 opacity-70">
+                  <p className="text-sm font-body">{message.text}</p>
+                  <p className="text-xs mt-1 opacity-70 font-body">
                     {new Date(message.timestamp).toLocaleTimeString('es-MX', {
                       hour: '2-digit',
                       minute: '2-digit'
