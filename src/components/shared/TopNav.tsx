@@ -1,14 +1,14 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
-interface HeaderProps {
-  onConversationToggle?: () => void;
+interface TopNavProps {
   activeTab?: 'Opciones' | 'Historial' | 'Ayuda';
+  onConversation?: () => void;
 }
 
-const Header: React.FC<HeaderProps> = ({
-  onConversationToggle,
+const TopNav: React.FC<TopNavProps> = ({
   activeTab = 'Opciones',
+  onConversation,
 }) => {
   const navigate = useNavigate();
 
@@ -39,7 +39,7 @@ const Header: React.FC<HeaderProps> = ({
             key={tab}
             onClick={() => {
               if (tab === 'Opciones') navigate('/categorias');
-              if (tab === 'Ayuda') onConversationToggle?.();
+              if (tab === 'Ayuda' && onConversation) onConversation();
             }}
             className={`px-4 py-2 rounded-pill text-[13px] font-semibold cursor-pointer transition-colors ${
               tab === activeTab
@@ -55,4 +55,4 @@ const Header: React.FC<HeaderProps> = ({
   );
 };
 
-export default Header;
+export default TopNav;

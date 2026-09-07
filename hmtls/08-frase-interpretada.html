@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=834,initial-scale=1,user-scalable=no"/>
+<title>Frase Interpretada — Señas a Voces Academy</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+:root{
+  --bg:#FDFBF7;--card:#FFFFFF;--muted:#EFECE6;
+  --primary:#E0702B;--secondary:#7C4023;--teal:#11525A;
+  --text:#2A323D;--text-muted:#6B7280;
+  --radius:20px;--radius-sm:12px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:834px;height:1194px;overflow:hidden;font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased}
+
+.status-bar{height:54px;padding:14px 24px 0;display:flex;justify-content:space-between;align-items:center;font-size:15px;font-weight:600}
+.status-bar .time{font-weight:700}
+.status-bar .icons{display:flex;gap:8px;align-items:center}
+.status-bar .icons svg{width:18px;height:18px}
+
+.content{display:flex;flex-direction:column;padding:20px 32px 40px;height:calc(1194px - 54px - 34px);overflow-y:auto}
+
+.screen-label{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--teal);margin-bottom:8px}
+
+.header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px}
+.header h1{font-size:26px;font-weight:800;letter-spacing:-.03em}
+.header .badge{display:flex;align-items:center;gap:6px;padding:6px 14px;background:#ECFDF5;border-radius:999px;font-size:12px;font-weight:600;color:#16A34A}
+.header .badge .dot{width:8px;height:8px;border-radius:50%;background:#16A34A}
+
+.source-card{display:flex;align-items:center;gap:14px;padding:16px 20px;background:var(--card);border:1px solid var(--muted);border-radius:var(--radius);margin-bottom:16px}
+.source-icon{width:44px;height:44px;border-radius:12px;background:var(--muted);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.source-icon svg{width:22px;height:22px;color:var(--text-muted)}
+.source-info h3{font-size:15px;font-weight:700;margin-bottom:2px}
+.source-info p{font-size:13px;color:var(--text-muted)}
+
+.phrase-card{background:var(--card);border:2px solid #ECFDF5;border-radius:var(--radius);padding:28px 28px 28px 32px;margin-bottom:16px;position:relative;animation:slideUp .4s cubic-bezier(.34,1.56,.64,1)}
+@keyframes slideUp{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
+.phrase-card::before{content:'';position:absolute;left:0;top:16px;bottom:16px;width:4px;background:#16A34A;border-radius:2px}
+.phrase-label{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text-muted);margin-bottom:12px}
+.phrase-text{font-size:24px;font-weight:600;line-height:1.45}
+.phrase-text .highlight{color:var(--primary)}
+
+.confidence{display:flex;align-items:center;gap:12px;padding:14px 20px;background:var(--card);border:1px solid var(--muted);border-radius:var(--radius-sm);margin-bottom:16px}
+.confidence .label{font-size:13px;font-weight:600;color:var(--text-muted);min-width:100px}
+.confidence .bar-track{flex:1;height:6px;background:var(--muted);border-radius:3px;overflow:hidden}
+.confidence .bar-fill{height:100%;background:#16A34A;border-radius:3px;width:92%}
+.confidence .value{font-size:14px;font-weight:700;color:#16A34A;min-width:40px;text-align:right}
+
+.timeline{display:flex;align-items:center;gap:0;margin-bottom:20px;padding:12px 16px;background:var(--card);border:1px solid var(--muted);border-radius:var(--radius-sm)}
+.timeline .node{display:flex;flex-direction:column;align-items:center;gap:4px}
+.timeline .node .dot{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700}
+.timeline .node .dot.done{background:#ECFDF5;color:#16A34A}
+.timeline .node .dot.current{background:var(--teal);color:#fff}
+.timeline .node .dot.pending{background:var(--muted);color:var(--text-muted)}
+.timeline .node .label{font-size:9px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.04em}
+.timeline .connector{flex:1;height:2px;background:var(--muted);margin:0 6px;margin-bottom:16px}
+.timeline .connector.done{background:#16A34A}
+
+.actions{display:flex;gap:12px;margin-top:auto}
+.btn{flex:1;padding:16px;border:none;border-radius:var(--radius-sm);font-size:15px;font-weight:700;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px}
+.btn-confirm{background:#16A34A;color:#fff;box-shadow:0 4px 16px rgba(22,163,74,.2)}
+.btn-confirm:hover{box-shadow:0 6px 20px rgba(22,163,74,.3);transform:translateY(-1px)}
+.btn-repeat{background:var(--muted);color:var(--text)}
+.btn-repeat:hover{background:#E5E2DB}
+.btn-add{background:#FEF3EC;color:var(--primary);border:1px solid #FDDCBA}
+.btn-add:hover{background:#FDDEC8}
+
+.bottom-indicator{position:absolute;bottom:10px;left:50%;transform:translateX(-50%);width:134px;height:5px;background:#2A323D;border-radius:999px}
+</style>
+</head>
+<body>
+
+<div class="status-bar">
+  <span class="time">9:43</span>
+  <span class="icons">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12.55a11 11 0 0114.08 0M1.42 9a16 16 0 0121.16 0M8.53 16.11a6 6 0 016.95 0M12 20h.01"/></svg>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="6" width="18" height="12" rx="2"/><line x1="23" y1="13" x2="23" y2="11"/></svg>
+  </span>
+</div>
+
+<div class="content">
+  <div class="header">
+    <div>
+      <div class="screen-label">Satélite — Frase Interpretada</div>
+      <h1>Resultado de la interpretación</h1>
+    </div>
+    <div class="badge"><span class="dot"></span>Interpretación exitosa</div>
+  </div>
+
+  <div class="source-card">
+    <div class="source-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
+        <path d="M8 10h.01M12 10h.01M16 10h.01" stroke-width="2.5" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <div class="source-info">
+      <h3>Interpretación de señas</h3>
+      <p>Se detectaron 3 gestos en la secuencia</p>
+    </div>
+  </div>
+
+  <div class="phrase-card">
+    <div class="phrase-label">Frase interpretada</div>
+    <div class="phrase-text">"Me gustaría solicitar <span class="highlight">una mesa para cuatro personas</span>, por favor. También quisiera ver la carta de specialidades."</div>
+  </div>
+
+  <div class="confidence">
+    <span class="label">Confianza</span>
+    <div class="bar-track"><div class="bar-fill"></div></div>
+    <span class="value">92%</span>
+  </div>
+
+  <div class="timeline">
+    <div class="node">
+      <div class="dot done">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+      </div>
+      <span class="label">Captura</span>
+    </div>
+    <div class="connector done"></div>
+    <div class="node">
+      <div class="dot done">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+      </div>
+      <span class="label">Análisis</span>
+    </div>
+    <div class="connector done"></div>
+    <div class="node">
+      <div class="dot done">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+      </div>
+      <span class="label">Traducción</span>
+    </div>
+    <div class="connector done"></div>
+    <div class="node">
+      <div class="dot current">4</div>
+      <span class="label">Revisión</span>
+    </div>
+    <div class="connector"></div>
+    <div class="node">
+      <div class="dot pending">5</div>
+      <span class="label">Envío</span>
+    </div>
+  </div>
+
+  <div class="actions">
+    <button class="btn btn-repeat">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg>
+      Repetir
+    </button>
+    <button class="btn btn-add">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      Añadir
+    </button>
+    <button class="btn btn-confirm" onclick="this.innerHTML='<svg width=18 height=18 viewBox=\'0 0 24 24\' fill=none stroke=currentColor stroke-width=2.5><polyline points=\'20 6 9 17 4 12\'/></svg> Enviado'">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+      Confirmar
+    </button>
+  </div>
+</div>
+
+<div class="bottom-indicator"></div>
+
+</body>
+</html>

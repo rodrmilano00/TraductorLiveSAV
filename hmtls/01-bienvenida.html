@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=834,initial-scale=1,user-scalable=no"/>
+<title>Bienvenida — Señas a Voces Academy</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+:root{
+  --bg:#FDFBF7;--card:#FFFFFF;--muted:#EFECE6;
+  --primary:#E0702B;--secondary:#7C4023;--teal:#11525A;
+  --text:#2A323D;--text-muted:#6B7280;
+  --radius:20px;--radius-sm:12px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:834px;height:1194px;overflow:hidden;font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased}
+
+.status-bar{height:54px;padding:14px 24px 0;display:flex;justify-content:space-between;align-items:center;font-size:15px;font-weight:600}
+.status-bar .time{font-weight:700}
+.status-bar .icons{display:flex;gap:8px;align-items:center}
+.status-bar .icons svg{width:18px;height:18px}
+
+.container{display:flex;flex-direction:column;align-items:center;justify-content:center;height:calc(1194px - 54px - 34px);padding:0 60px;text-align:center}
+
+.logo-mark{width:88px;height:88px;border-radius:50%;background:linear-gradient(135deg,#FEF3EC,#FDE0CC);display:flex;align-items:center;justify-content:center;margin-bottom:32px;box-shadow:0 4px 20px rgba(224,112,43,.15)}
+.logo-mark svg{width:44px;height:44px;color:var(--primary)}
+
+.greeting{font-size:17px;font-weight:500;color:var(--text-muted);margin-bottom:12px;letter-spacing:-.01em}
+
+.title{font-size:42px;font-weight:800;letter-spacing:-.03em;line-height:1.15;margin-bottom:12px}
+.title .highlight{color:var(--primary)}
+
+.subtitle{font-size:18px;font-weight:400;color:var(--text-muted);line-height:1.5;margin-bottom:48px;max-width:480px}
+
+.btn-start{width:100%;max-width:380px;padding:20px 48px;background:var(--primary);color:#fff;font-size:18px;font-weight:700;border:none;border-radius:var(--radius-sm);cursor:pointer;letter-spacing:.06em;text-transform:uppercase;box-shadow:0 6px 20px rgba(224,112,43,.3);transition:all .2s}
+.btn-start:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(224,112,43,.4)}
+.btn-start:active{transform:translateY(0);box-shadow:0 4px 12px rgba(224,112,43,.3)}
+
+.bottom-indicator{position:absolute;bottom:10px;left:50%;transform:translateX(-50%);width:134px;height:5px;background:#2A323D;border-radius:999px}
+
+.accessibility-badge{position:absolute;bottom:60px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:8px;padding:8px 16px;background:var(--card);border:1px solid var(--muted);border-radius:999px;font-size:12px;font-weight:600;color:var(--text-muted)}
+.accessibility-badge .dot{width:8px;height:8px;border-radius:50%;background:var(--teal)}
+</style>
+</head>
+<body>
+
+<div class="status-bar">
+  <span class="time">9:41</span>
+  <span class="icons">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12.55a11 11 0 0114.08 0M1.42 9a16 16 0 0121.16 0M8.53 16.11a6 6 0 016.95 0M12 20h.01"/></svg>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="6" width="18" height="12" rx="2"/><line x1="23" y1="13" x2="23" y2="11"/></svg>
+  </span>
+</div>
+
+<div class="container">
+  <div class="logo-mark">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+      <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
+      <path d="M8 10h.01M12 10h.01M16 10h.01" stroke-width="2.5" stroke-linecap="round"/>
+    </svg>
+  </div>
+
+  <div class="greeting">Bienvenido a</div>
+  <h1 class="title"><span class="highlight">Señas a Voces</span><br>Academy</h1>
+  <p class="subtitle">Tu asistente de comunicación accesible. Conectamos personas a través de la lengua de señas y la voz.</p>
+
+  <button class="btn-start" onclick="this.textContent='Iniciando...';setTimeout(()=>this.textContent='EMPEZAR',1200)">EMPEZAR</button>
+</div>
+
+<div class="accessibility-badge">
+  <span class="dot"></span>
+  Accesibilidad habilitada
+</div>
+
+<div class="bottom-indicator"></div>
+
+</body>
+</html>

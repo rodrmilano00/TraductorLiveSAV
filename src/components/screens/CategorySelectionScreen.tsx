@@ -1,105 +1,116 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAppContext } from '../../contexts/AppContext';
-import Header from '../shared/Header';
+import StatusBar from '../shared/StatusBar';
+import BottomIndicator from '../shared/BottomIndicator';
 import type { Category } from '../../types';
 
 const CategorySelectionScreen: React.FC = () => {
   const navigate = useNavigate();
   const { setSelectedCategory } = useAppContext();
+  const [selectedId, setSelectedId] = useState<string | null>('1');
 
   const categories: Category[] = [
-    { id: '1', name: 'Trámites de Documentación', description: 'Actas, certificados y documentos oficiales', icon: 'document' },
-    { id: '2', name: 'Servicios Médicos', description: 'Consultas y servicios de salud', icon: 'medical' },
-    { id: '3', name: 'Apoyo Social', description: 'Programas de asistencia social', icon: 'social' },
-    { id: '4', name: 'Servicios Educativos', description: 'Educación y capacitación', icon: 'education' },
-    { id: '5', name: 'Trámites Legales', description: 'Asesoría y trámites legales', icon: 'legal' },
-    { id: '6', name: 'Otros Servicios', description: 'Consultas generales', icon: 'other' },
+    { id: '1', name: 'Información general', description: 'Consultas sobre el establecimiento, horarios o servicios' },
+    { id: '2', name: 'Hacer una reserva', description: 'Reservar mesa, habitación o espacio disponible' },
+    { id: '3', name: 'Realizar un pedido', description: 'Solicitar alimentos, bebidas o productos' },
+    { id: '4', name: 'Otro servicio', description: 'Cualquier otra solicitud o necesidad específica' },
   ];
 
-  const handleCategorySelect = (category: Category) => {
-    setSelectedCategory(category);
-    navigate(`/detalle/${category.id}`);
-  };
+  const handleSelect = (cat: Category) => setSelectedId(cat.id);
 
-  const renderIcon = (icon: string) => {
-    const icons: Record<string, React.ReactElement> = {
-      document: (
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-      ),
-      medical: (
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-      ),
-      social: (
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M17 20h5v-2a4 4 0 00-3-3.87M9 20H4v-2a4 4 0 013-3.87m6-1.13a4 4 0 100-8 4 4 0 000 8zm6 0a3 3 0 100-6 3 3 0 000 6zm-12 0a3 3 0 100-6 3 3 0 000 6z" />
-      ),
-      education: (
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M12 14l9-5-9-5-9 5 9 5z M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 008 20c-2.8 0-5.486-.682-7.84-1.879A12.083 12.083 0 01.665 10.578L12 14z M12 14v6" />
-      ),
-      legal: (
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3" />
-      ),
-      other: (
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093M12 17h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-      ),
-    };
-
-    return (
-      <svg className="w-7 h-7 text-brand-teal" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        {icons[icon] || icons.other}
-      </svg>
-    );
+  const handleConfirm = () => {
+    const cat = categories.find(c => c.id === selectedId);
+    if (cat) {
+      setSelectedCategory(cat);
+      navigate(`/detalle/${cat.id}`);
+    }
   };
 
   return (
-    <div className="min-h-screen bg-brand-cream">
-      <Header showConversation={false} />
+    <div className="relative min-h-screen bg-app flex flex-col overflow-hidden">
+      <StatusBar />
 
-      {/* Decorative blobs */}
-      <div className="pointer-events-none fixed -top-24 -right-24 w-80 h-80 rounded-full bg-brand-orange/8 blur-3xl" />
-      <div className="pointer-events-none fixed -bottom-32 -left-24 w-96 h-96 rounded-full bg-brand-teal/6 blur-3xl" />
-
-      <div className="relative max-w-6xl mx-auto px-8 py-10">
-        {/* Heading */}
-        <div className="text-center mb-10 animate-fade">
-          <p className="card-eyebrow mb-2">Paso 1 · Selección</p>
-          <h1 className="text-4xl font-extrabold text-brand-ink mb-3 font-display">
-            ¿Cómo podemos atenderle?
-          </h1>
-          <p className="text-lg text-brand-muted font-body">
-            Seleccione el tipo de trámite o servicio que necesita
-          </p>
+      {/* Top nav */}
+      <div className="flex items-center justify-between px-8 py-3 bg-brand-teal shrink-0">
+        <div className="flex items-center gap-2">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth={1.5}>
+            <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" />
+            <path d="M8 10h.01M12 10h.01M16 10h.01" strokeWidth={2.5} strokeLinecap="round" />
+          </svg>
+          <span className="text-white text-[14px] font-bold" style={{ letterSpacing: '0.02em' }}>Señas a Voces</span>
         </div>
+        <div className="flex gap-1">
+          <div className="px-4 py-2 rounded-pill text-[13px] font-semibold bg-white/15 text-white cursor-pointer">Opciones</div>
+          <div className="px-4 py-2 rounded-pill text-[13px] font-semibold text-white/60 cursor-pointer hover:text-white transition-colors">Historial</div>
+          <div className="px-4 py-2 rounded-pill text-[13px] font-semibold text-white/60 cursor-pointer hover:text-white transition-colors">Ayuda</div>
+        </div>
+      </div>
 
-        {/* Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-          {categories.map((category, index) => (
+      {/* Content */}
+      <div className="flex-1 px-8 py-8 overflow-y-auto">
+        <div className="text-[12px] font-bold uppercase text-brand-orange mb-2" style={{ letterSpacing: '0.1em' }}>Pantalla 02</div>
+        <h1 className="text-[34px] font-extrabold mb-1.5" style={{ letterSpacing: '-0.03em', lineHeight: '1.2' }}>
+          ¿Cómo podemos <span className="text-brand-orange">atenderle</span>?
+        </h1>
+        <p className="text-[16px] text-brand-muted mb-8" style={{ lineHeight: '1.5' }}>
+          Seleccione el servicio que necesita para comenzar la atención.
+        </p>
+
+        {/* Option list */}
+        <div className="flex flex-col gap-3 mb-8">
+          {categories.map((cat) => (
             <button
-              key={category.id}
-              onClick={() => handleCategorySelect(category)}
-              className="surface-card btn-press p-6 text-left animate-slideUp"
-              style={{ animationDelay: `${index * 60}ms` }}
+              key={cat.id}
+              onClick={() => handleSelect(cat)}
+              className={`btn-press flex items-center gap-4 p-5 bg-white border-2 rounded-card transition-all text-left ${
+                selectedId === cat.id
+                  ? 'border-brand-orange bg-brand-softOrange'
+                  : 'border-muted hover:border-brand-orange hover:bg-brand-softOrange'
+              }`}
+              style={selectedId === cat.id ? { boxShadow: '0 2px 12px rgba(224, 112, 43, 0.1)' } : {}}
             >
-              <div className="flex items-start gap-4">
-                <div className="shrink-0 bg-gradient-to-br from-brand-teal/12 to-brand-cyan/8 p-3.5 rounded-soft">
-                  {renderIcon(category.icon || 'other')}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <h3 className="text-lg font-bold text-brand-ink mb-1.5 font-display leading-snug">
-                    {category.name}
-                  </h3>
-                  <p className="text-brand-muted text-sm font-body leading-relaxed">
-                    {category.description}
-                  </p>
-                </div>
-                <svg className="w-5 h-5 text-brand-mist shrink-0 mt-1 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                </svg>
+              <div className={`w-[44px] h-[44px] rounded-full flex items-center justify-center text-[18px] font-extrabold shrink-0 transition-colors ${
+                selectedId === cat.id ? 'bg-brand-orange text-white' : 'bg-muted text-brand-muted'
+              }`}>
+                {cat.id}
+              </div>
+              <div className="flex-1">
+                <h3 className="text-[17px] font-bold mb-0.5">{cat.name}</h3>
+                <p className="text-[13px] text-brand-muted">{cat.description}</p>
+              </div>
+              <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center shrink-0 transition-all ${
+                selectedId === cat.id ? 'bg-brand-orange border-brand-orange' : 'border-muted'
+              }`}>
+                {selectedId === cat.id && (
+                  <svg className="w-2 h-2 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <polyline points="20 6 9 17 4 12" strokeWidth={3} strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                )}
               </div>
             </button>
           ))}
         </div>
+
+        {/* Bottom actions */}
+        <div className="flex gap-3">
+          <button
+            onClick={() => navigate('/')}
+            className="btn-press flex-1 py-4 bg-muted text-brand-ink text-[15px] font-semibold rounded-soft hover:bg-[#E5E2DB] transition-colors"
+          >
+            Volver
+          </button>
+          <button
+            onClick={handleConfirm}
+            className="btn-press flex-1 py-4 bg-brand-orange text-white text-[15px] font-bold rounded-soft transition-all"
+            style={{ boxShadow: '0 4px 16px rgba(224, 112, 43, 0.25)' }}
+          >
+            Seleccionar
+          </button>
+        </div>
       </div>
+
+      <BottomIndicator />
     </div>
   );
 };

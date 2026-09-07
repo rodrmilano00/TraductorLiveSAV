@@ -1,137 +1,34 @@
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
-  :root {
-    --bg: #FAF7ED;
-    --surface: #FFFFFF;
-    --fg: #1A2E35;
-    --muted: #5A7A82;
-    --border: #D4E4E8;
-    --primary: #0D5C6F;
-    --accent: #EC9960;
-    --success: #A8D5BA;
-    --warning: #EC9960;
-    --danger: #D96B6B;
-    --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
-  }
-
-  .dark {
-    --bg: #083D48;
-    --surface: #0C4A57;
-    --fg: #E8F0F2;
-    --muted: #8AACB4;
-    --border: #1A5C6A;
-    --primary: #2AABB8;
-    --accent: #F0A870;
-    --success: #6BC5A0;
-    --warning: #F0A870;
-    --danger: #E87C7C;
-  }
-
   * {
     box-sizing: border-box;
+    margin: 0;
+    padding: 0;
   }
 
-  html,
-  body,
-  #root {
+  html, body, #root {
     min-height: 100%;
   }
 
   body {
-    margin: 0;
-    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
-    background: var(--bg);
-    color: var(--fg);
-    text-rendering: geometricPrecision;
+    font-family: 'Inter', system-ui, sans-serif;
+    background: #FDFBF7;
+    color: #2A323D;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-  }
-
-  .font-display {
-    letter-spacing: -0.012em;
+    text-rendering: geometricPrecision;
   }
 }
-
-/* ─── Animations ─────────────────────────────────────────── */
-
-@keyframes float-in {
-  from { opacity: 0; transform: translateY(32px) scale(0.96); }
-  to   { opacity: 1; transform: translateY(0) scale(1); }
-}
-
-@keyframes fade-in-up {
-  from { opacity: 0; transform: translateY(16px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes wave-drift {
-  0%, 100% { transform: translateX(0); }
-  50%      { transform: translateX(-20px); }
-}
-
-@keyframes glow-pulse {
-  0%, 100% { box-shadow: 0 0 12px rgba(42, 171, 184, 0.3); }
-  50%      { box-shadow: 0 0 24px rgba(42, 171, 184, 0.5); }
-}
-
-@keyframes shimmer-pass {
-  from { transform: translateX(-120%); }
-  to   { transform: translateX(120%); }
-}
-
-@keyframes record-ring {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(217, 107, 107, 0.34); }
-  50%      { box-shadow: 0 0 0 12px rgba(217, 107, 107, 0); }
-}
-
-@keyframes hand-pulse {
-  0%, 100% { transform: scale(1); opacity: 0.6; }
-  50%      { transform: scale(1.08); opacity: 1; }
-}
-
-@keyframes pulse-subtle {
-  0%, 100% { opacity: 1; }
-  50%      { opacity: 0.7; }
-}
-
-@keyframes scaleIn {
-  from { opacity: 0; transform: scale(0.95); }
-  to   { opacity: 1; transform: scale(1); }
-}
-
-@keyframes slideUp {
-  from { opacity: 0; transform: translateY(20px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to   { opacity: 1; }
-}
-
-@keyframes menu-pop {
-  from { opacity: 0; transform: translateY(-8px) scale(0.98); }
-  to   { opacity: 1; transform: translateY(0) scale(1); }
-}
-
-.animate-float-in   { animation: float-in 0.7s var(--ease-out) forwards; }
-.animate-fade       { animation: fade-in-up 0.5s var(--ease-out) forwards; }
-.animate-wave-drift { animation: wave-drift 8s ease-in-out infinite; }
-.animate-hand-pulse { animation: hand-pulse 2.5s ease-in-out infinite; }
-.animate-fadeIn     { animation: fadeIn 0.3s var(--ease-out) forwards; }
-.animate-slideUp    { animation: slideUp 0.4s var(--ease-out) forwards; }
-.animate-scaleIn    { animation: scaleIn 0.3s var(--ease-out) forwards; }
-.animate-pulse-subtle { animation: pulse-subtle 2s ease-in-out infinite; }
 
 /* ─── Button interactions ────────────────────────────────── */
 
 .btn-press {
-  transition: transform 160ms var(--ease-out), box-shadow 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+  transition: transform 140ms ease-out, background-color 0.18s ease, border-color 0.18s ease, color 0.18s ease, box-shadow 0.18s ease;
 }
 
 .btn-press:active {
@@ -142,141 +39,17 @@
   transform: translateY(-1px);
 }
 
-.btn-premium {
-  position: relative;
-  overflow: hidden;
-  transition: all 0.3s var(--ease-out);
-}
-
-.btn-premium::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-  transition: left 0.5s var(--ease-out);
-}
-
-.btn-premium:hover::before {
-  left: 100%;
-}
-
-.btn-premium:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-}
-
-.btn-premium:active {
-  transform: translateY(0) scale(0.98);
-}
-
-.btn-press:focus-visible,
 button:focus-visible,
 a:focus-visible {
-  outline: 3px solid rgba(236, 153, 96, 0.52);
-  outline-offset: 3px;
-}
-
-/* ─── Surface cards ──────────────────────────────────────── */
-
-.surface-card {
-  position: relative;
-  isolation: isolate;
-  overflow: hidden;
-  border: 1px solid #E8E4D8 !important;
-  background: #FFFFFF !important;
-  border-radius: 20px !important;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-  transition: border-color 220ms var(--ease-out), background 220ms var(--ease-out), transform 220ms var(--ease-out), box-shadow 220ms var(--ease-out);
-}
-
-.surface-card > * {
-  position: relative;
-  z-index: 1;
-}
-
-.surface-card:hover {
-  border-color: rgba(140, 74, 39, 0.35) !important;
-  box-shadow: 0 8px 24px rgba(26, 46, 59, 0.10);
-  transform: translateY(-3px);
-}
-
-.dark .surface-card {
-  border-color: rgba(92, 196, 214, 0.18) !important;
-  background: #0c4a57 !important;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}
-
-.dark .surface-card:hover {
-  border-color: rgba(92, 196, 214, 0.34) !important;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.22);
-}
-
-/* ─── App header (glass) ─────────────────────────────────── */
-
-.app-header {
-  position: sticky;
-  overflow: visible;
-  background:
-    linear-gradient(180deg, rgba(210, 230, 226, 0.94), rgba(196, 221, 218, 0.82)),
-    rgba(205, 228, 224, 0.88) !important;
-  border-color: rgba(13, 92, 111, 0.18) !important;
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.62),
-    0 1px 0 rgba(13, 92, 111, 0.08);
-  backdrop-filter: blur(24px) saturate(1.28);
-}
-
-.app-header > * {
-  position: relative;
-  z-index: 3;
-}
-
-.dark .app-header {
-  background:
-    linear-gradient(180deg, rgba(13, 55, 64, 0.96), rgba(10, 47, 55, 0.9)),
-    rgba(9, 50, 59, 0.92) !important;
-  border-color: rgba(92, 196, 214, 0.18) !important;
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.08),
-    0 1px 0 rgba(0, 0, 0, 0.22);
-}
-
-/* ─── Record button ring ─────────────────────────────────── */
-
-.record-button.is-recording {
-  animation: record-ring 1.35s ease-in-out infinite;
-}
-
-/* ─── Eyebrow label ──────────────────────────────────────── */
-
-.card-eyebrow {
-  font-size: 0.6875rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--accent);
-}
-
-/* ─── Decorative wave divider ────────────────────────────── */
-
-.wave-divider {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 120px;
-  pointer-events: none;
-  opacity: 0.5;
+  outline: 2px solid rgba(224, 112, 43, 0.5);
+  outline-offset: 2px;
 }
 
 /* ─── Scrollbar ──────────────────────────────────────────── */
 
 ::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
+  width: 6px;
+  height: 6px;
 }
 
 ::-webkit-scrollbar-track {
@@ -284,15 +57,11 @@ a:focus-visible {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(13, 92, 111, 0.25);
+  background: rgba(42, 50, 61, 0.15);
   border-radius: 8px;
 }
 
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(13, 92, 111, 0.4);
-}
-
-/* ─── Landscape-only enforcement for tablet kiosk ────────── */
+/* ─── Landscape-only enforcement ─────────────────────────── */
 
 @media (orientation: portrait) {
   body::before {
@@ -302,23 +71,21 @@ a:focus-visible {
     left: 0;
     width: 100%;
     height: 100%;
-    background: #083D48;
+    background: #11525A;
     color: #fff;
     display: flex;
     align-items: center;
     justify-content: center;
     z-index: 9999;
-    font-size: 24px;
+    font-size: 20px;
     text-align: center;
     padding: 20px;
-    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    font-family: 'Inter', system-ui, sans-serif;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
+  *, *::before, *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;

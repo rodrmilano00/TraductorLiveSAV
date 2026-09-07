@@ -1,99 +1,121 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAppContext } from '../../../contexts/AppContext';
-import Header from '../../shared/Header';
-import StatusIndicator from '../../shared/StatusIndicator';
+import StatusBar from '../../shared/StatusBar';
+import BottomIndicator from '../../shared/BottomIndicator';
 import ConversationPanel from '../../shared/ConversationPanel';
 
 const PhraseViewScreen: React.FC = () => {
   const navigate = useNavigate();
   const { currentPhrase, conversationHistory } = useAppContext();
-  const [showConversation, setShowConversation] = React.useState(false);
+  const [showConversation, setShowConversation] = useState(false);
 
   const handleContinue = () => {
     navigate('/lsm/captura');
   };
 
   return (
-    <div className="min-h-screen bg-brand-cream">
-      <Header
-        showConversation={true}
-        onConversationToggle={() => setShowConversation(!showConversation)}
-      />
+    <div className="relative min-h-screen bg-app flex flex-col overflow-hidden">
+      <StatusBar />
+
+      {/* Top nav — teal bar matching HTML identity */}
+      <div className="flex items-center justify-between px-8 py-3 bg-brand-teal shrink-0">
+        <div className="flex items-center gap-2">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth={1.5}>
+            <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" />
+            <path d="M8 10h.01M12 10h.01M16 10h.01" strokeWidth={2.5} strokeLinecap="round" />
+          </svg>
+          <span className="text-white text-[14px] font-bold" style={{ letterSpacing: '0.02em' }}>
+            Señas a Voces
+          </span>
+        </div>
+        <div className="flex gap-1">
+          <div className="px-4 py-2 rounded-pill text-[13px] font-semibold bg-white/15 text-white cursor-pointer">Opciones</div>
+          <div className="px-4 py-2 rounded-pill text-[13px] font-semibold text-white/60 cursor-pointer hover:text-white transition-colors">Historial</div>
+          <div
+            onClick={() => setShowConversation(true)}
+            className="px-4 py-2 rounded-pill text-[13px] font-semibold text-white/60 cursor-pointer hover:text-white transition-colors"
+          >
+            Ayuda
+          </div>
+        </div>
+      </div>
+
+      {/* Content */}
+      <div className="flex-1 px-8 py-8 overflow-y-auto">
+        <div className="text-[12px] font-bold uppercase text-brand-orange mb-2" style={{ letterSpacing: '0.1em' }}>Pantalla 03 · Traducción LSM</div>
+        <h1 className="text-[34px] font-extrabold mb-1.5" style={{ letterSpacing: '-0.03em', lineHeight: '1.2' }}>
+          Frase a <span className="text-brand-orange">traducir</span>
+        </h1>
+        <p className="text-[16px] text-brand-muted mb-8" style={{ lineHeight: '1.5' }}>
+          El usuario sordo podrá responder usando lenguaje de señas mexicano.
+        </p>
+
+        {/* Phrase card */}
+        <div className="bg-white border border-muted rounded-card p-6 mb-6">
+          <div className="text-[12px] font-bold uppercase text-brand-muted mb-3" style={{ letterSpacing: '0.08em' }}>
+            Frase seleccionada
+          </div>
+          <p className="text-[22px] font-semibold" style={{ lineHeight: '1.5', letterSpacing: '-0.01em' }}>
+            "{currentPhrase || 'No hay frase seleccionada'}"
+          </p>
+        </div>
+
+        {/* Status badge */}
+        <div className="inline-flex items-center gap-2 px-[18px] py-2 bg-brand-softOrange rounded-pill text-[14px] font-semibold text-brand-orange mb-6">
+          <span className="w-2.5 h-2.5 rounded-full bg-brand-orange animate-pulse-opacity" />
+          Lista para traducir
+        </div>
+
+        {/* Instructions card */}
+        <div className="bg-white border border-muted rounded-card p-5 mb-6">
+          <h3 className="text-[15px] font-bold mb-3 flex items-center gap-2">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#E0702B" strokeWidth={2}>
+              <circle cx="12" cy="12" r="10" />
+              <line x1="12" y1="16" x2="12" y2="12" />
+              <line x1="12" y1="8" x2="12.01" y2="8" />
+            </svg>
+            Instrucciones
+          </h3>
+          <div className="flex flex-col gap-2.5">
+            {[
+              'La cámara capturará las señas del usuario sordo',
+              'El sistema traducirá los gestos a texto automáticamente',
+              'La frase traducida aparecerá en pantalla para confirmar',
+            ].map((step, i) => (
+              <div key={i} className="flex items-start gap-3 text-[14px]" style={{ lineHeight: '1.5' }}>
+                <span className="w-7 h-7 rounded-full bg-muted flex items-center justify-center text-[12px] font-bold text-brand-muted shrink-0">{i + 1}</span>
+                {step}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Actions */}
+        <div className="flex gap-3">
+          <button
+            onClick={() => navigate(-1)}
+            className="btn-press flex-1 py-4 bg-muted text-brand-ink text-[15px] font-semibold rounded-soft hover:bg-[#E5E2DB] transition-colors"
+          >
+            Volver
+          </button>
+          <button
+            onClick={handleContinue}
+            className="btn-press flex-1 py-4 bg-brand-orange text-white text-[15px] font-bold rounded-soft transition-all"
+            style={{ boxShadow: '0 4px 16px rgba(224, 112, 43, 0.25)' }}
+          >
+            Iniciar captura
+          </button>
+        </div>
+      </div>
+
+      <BottomIndicator />
 
       <ConversationPanel
         messages={conversationHistory}
         isOpen={showConversation}
         onClose={() => setShowConversation(false)}
       />
-
-      <div className="flex min-h-[calc(100vh-72px)]">
-        {/* Center - Phrase display */}
-        <div className="flex-1 p-8 flex items-center justify-center">
-          <div className="w-full max-w-3xl">
-            <div className="surface-card p-9 text-center animate-fade">
-              <p className="card-eyebrow mb-2">Paso 3 · Traducción LSM</p>
-              <h2 className="text-2xl font-extrabold text-brand-ink mb-7 font-display">
-                Frase a traducir
-              </h2>
-
-              {/* Phrase display */}
-              <div className="relative bg-gradient-to-br from-brand-teal/8 to-brand-cyan/5 border-2 border-brand-teal/15 rounded-softer p-8 mb-7 overflow-hidden">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-brand-teal/5 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2" />
-                <p className="relative text-3xl text-brand-ink font-medium leading-relaxed font-body">
-                  {currentPhrase || "No hay frase seleccionada"}
-                </p>
-              </div>
-
-              <div className="flex items-center justify-center mb-7">
-                <StatusIndicator type="playing" text="Lista para traducir" />
-              </div>
-
-              {/* Instructions */}
-              <div className="bg-brand-orange/8 border-l-4 border-brand-orange p-4 rounded-r-soft mb-7 text-left">
-                <p className="text-brand-ink font-body leading-relaxed">
-                  <strong className="text-brand-orange">Instrucciones:</strong> El usuario sordo podrá responder usando lenguaje de señas mexicano. La cámara capturará las señas y las traducirá a texto.
-                </p>
-              </div>
-
-              <button
-                onClick={handleContinue}
-                className="btn-premium bg-brand-teal hover:bg-brand-deep text-white font-bold text-lg px-12 py-4 rounded-softer shadow-soft min-h-[64px] font-display inline-flex items-center gap-3"
-              >
-                Iniciar captura
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                </svg>
-              </button>
-            </div>
-          </div>
-        </div>
-
-        {/* Right - Conversation preview */}
-        <div className="w-80 bg-white/60 border-l border-brand-mist p-6 backdrop-blur-sm">
-          <p className="card-eyebrow mb-3">Conversación actual</p>
-          <div className="space-y-3 max-h-[calc(100vh-200px)] overflow-y-auto">
-            {conversationHistory.length === 0 ? (
-              <p className="text-brand-muted text-sm text-center py-8 font-body">No hay mensajes aún</p>
-            ) : (
-              conversationHistory.slice(-3).map((message) => (
-                <div
-                  key={message.id}
-                  className={`p-3.5 rounded-soft ${message.type === 'user'
-                    ? 'bg-brand-teal/10 text-brand-teal border border-brand-teal/15'
-                    : 'bg-brand-cream text-brand-ink border border-brand-mist'
-                    }`}
-                >
-                  <p className="text-sm font-body leading-relaxed">{message.text}</p>
-                  <p className="text-xs mt-1.5 opacity-50 font-body">
-                    {new Date(message.timestamp).toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' })}
-                  </p>
-                </div>
-              ))
-            )}
-          </div>
-        </div>
-      </div>
     </div>
   );
 };

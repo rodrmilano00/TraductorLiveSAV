@@ -3,151 +3,136 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { useAppContext } from '../../../contexts/AppContext';
 import { useLSMRecognition } from '../../../hooks/useLSMRecognition';
 import type { HandLandmarks } from '../../../types';
-import Header from '../../shared/Header';
-import StatusIndicator from '../../shared/StatusIndicator';
-import ConversationPanel from '../../shared/ConversationPanel';
+import StatusBar from '../../shared/StatusBar';
+import BottomIndicator from '../../shared/BottomIndicator';
 
 const ProcessingScreen: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { conversationHistory, addConversationMessage } = useAppContext();
+  const { addConversationMessage } = useAppContext();
   const { recognize, error } = useLSMRecognition();
-  const [showConversation, setShowConversation] = useState(false);
+  const [currentStep, setCurrentStep] = useState(1);
 
   useEffect(() => {
     const processLandmarks = async () => {
       const landmarks = location.state?.landmarks as HandLandmarks;
+      if (!landmarks) { navigate('/lsm/captura'); return; }
 
-      if (!landmarks) {
-        console.error('No landmarks received from previous screen');
-        navigate('/lsm/captura');
-        return;
-      }
+      const stepInterval = setInterval(() => {
+        setCurrentStep(prev => Math.min(prev + 1, 2));
+      }, 2000);
 
       try {
         const result = await recognize(landmarks);
+        clearInterval(stepInterval);
+        setCurrentStep(2);
 
-        // NOTE: The current backend model only classifies static alphabet letters,
-        // not dynamic signs or complete phrases. This shows the raw letter-by-letter result.
         const interpretedText = result.letter;
-
         addConversationMessage({
-          type: 'assistant',
-          text: `Letra reconocida: ${interpretedText}${result.confidence ? ` (confianza: ${Math.round(result.confidence * 100)}%)` : ''}`
+          type: 'user',
+          text: `Letra reconocida: ${interpretedText}${result.confidence ? ` (${Math.round(result.confidence * 100)}%)` : ''}`,
         });
 
         setTimeout(() => {
-          navigate('/lsm/resultado', {
-            state: {
-              result: interpretedText,
-              confidence: result.confidence,
-              topK: result.top_k
-            }
-          });
-        }, 500);
-
+          navigate('/lsm/resultado', { state: { result: interpretedText, confidence: result.confidence, topK: result.top_k } });
+        }, 800);
       } catch (err) {
+        clearInterval(stepInterval);
         console.error('Error processing landmarks:', err);
-        setTimeout(() => {
-          navigate('/lsm/captura');
-        }, 2000);
+        setTimeout(() => navigate('/lsm/captura'), 2000);
       }
     };
 
     processLandmarks();
   }, [location.state, recognize, navigate, addConversationMessage]);
 
+  const steps = [
+    { title: 'Señas capturadas', desc: 'Cámara procesó el movimiento correctamente' },
+    { title: 'Interpretando lenguaje', desc: 'Analizando gestos y convirtiendo a texto' },
+    { title: 'Generando respuesta', desc: 'Preparando la frase traducida' },
+  ];
+
   return (
-    <div className="min-h-screen bg-brand-cream">
-      <Header
-        showConversation={true}
-        onConversationToggle={() => setShowConversation(!showConversation)}
-      />
+    <div className="relative min-h-screen bg-app flex flex-col overflow-hidden">
+      <StatusBar />
 
-      <ConversationPanel
-        messages={conversationHistory}
-        isOpen={showConversation}
-        onClose={() => setShowConversation(false)}
-      />
+      <div className="flex-1 flex flex-col items-center justify-center px-12 py-10 text-center">
+        <div className="text-[12px] font-bold uppercase text-brand-muted mb-8" style={{ letterSpacing: '0.1em' }}>Procesando</div>
 
-      <div className="flex min-h-[calc(100vh-72px)]">
-        {/* Center - Processing */}
-        <div className="flex-1 p-8 flex items-center justify-center">
-          <div className="w-full max-w-2xl">
-            <div className="surface-card p-10 text-center animate-scaleIn">
-              {/* Spinner */}
-              <div className="mb-8">
-                <div className="relative w-28 h-28 mx-auto">
-                  <div className="absolute inset-0 rounded-full border-4 border-brand-mist" />
-                  <div className="absolute inset-0 rounded-full border-4 border-transparent border-t-brand-teal border-r-brand-cyan animate-spin" />
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <span className="text-3xl animate-hand-pulse">✋</span>
-                  </div>
-                </div>
-              </div>
+        {/* Spinner ring — 80x80 */}
+        <div className="relative w-20 h-20 mb-8">
+          <div className="absolute inset-0 rounded-full border-4 border-muted" />
+          <div className="absolute inset-0 rounded-full border-4 border-transparent border-t-brand-orange border-r-brand-orange animate-spin" />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-4 h-4 rounded-full bg-brand-orange animate-pulse-opacity" />
+        </div>
 
-              <p className="card-eyebrow mb-2">Analizando</p>
-              <h2 className="text-3xl font-extrabold text-brand-ink mb-4 font-display">
-                Procesando...
-              </h2>
+        <h1 className="text-[28px] font-extrabold mb-2" style={{ letterSpacing: '-0.03em' }}>Procesando...</h1>
+        <p className="text-[16px] text-brand-muted mb-10 max-w-[400px]" style={{ lineHeight: '1.5' }}>
+          Estamos interpretando sus señas y preparando la respuesta. Esto solo tomará un momento.
+        </p>
 
-              <div className="flex items-center justify-center mb-7">
-                <StatusIndicator type="processing" />
-              </div>
-
-              <p className="text-brand-muted text-lg mb-5 font-body">
-                Analizando las señas capturadas
-              </p>
-
-              {error && (
-                <div className="bg-brand-red/10 border border-brand-red/30 text-brand-red px-5 py-4 rounded-soft mb-4 text-left">
-                  <p className="font-bold font-display flex items-center gap-2">
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+        {/* Steps */}
+        <div className="flex flex-col gap-3 w-full max-w-[420px] mb-10">
+          {steps.map((step, i) => {
+            const isDone = i < currentStep;
+            const isActive = i === currentStep;
+            return (
+              <div
+                key={i}
+                className={`flex items-center gap-3.5 px-5 py-4 bg-white border rounded-soft text-left transition-all ${
+                  isActive ? 'border-brand-orange bg-brand-softOrange' :
+                  isDone ? 'border-brand-success bg-brand-successBg' :
+                  'border-muted'
+                }`}
+              >
+                <div className={`w-9 h-9 rounded-full flex items-center justify-center shrink-0 text-[14px] font-bold ${
+                  isDone ? 'bg-brand-success text-white' :
+                  isActive ? 'bg-brand-orange text-white' :
+                  'bg-muted text-brand-muted'
+                }`}>
+                  {isDone ? (
+                    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={3}>
+                      <polyline points="20 6 9 17 4 12" strokeLinecap="round" strokeLinejoin="round" />
                     </svg>
-                    Error en el procesamiento
-                  </p>
-                  <p className="text-sm font-body mt-1">{error}</p>
-                  <p className="text-sm mt-2 font-body opacity-70">Regresando a la captura...</p>
+                  ) : i + 1}
                 </div>
-              )}
-
-              {!error && (
-                <div className="bg-brand-teal/8 border-l-4 border-brand-teal p-4 rounded-r-soft text-left">
-                  <p className="text-brand-ink font-body leading-relaxed">
-                    El sistema está enviando los datos de las señas al servicio de reconocimiento y esperando la interpretación.
-                  </p>
+                <div className="flex-1">
+                  <h4 className="text-[14px] font-bold mb-0.5">{step.title}</h4>
+                  <p className="text-[12px] text-brand-muted">{step.desc}</p>
                 </div>
-              )}
-            </div>
-          </div>
+                {isDone && (
+                  <svg className="w-4 h-4 text-brand-success" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+                    <polyline points="20 6 9 17 4 12" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                )}
+              </div>
+            );
+          })}
         </div>
 
-        {/* Right - Conversation preview */}
-        <div className="w-80 bg-white/60 border-l border-brand-mist p-6 backdrop-blur-sm">
-          <p className="card-eyebrow mb-3">Conversación actual</p>
-          <div className="space-y-3 max-h-[calc(100vh-200px)] overflow-y-auto">
-            {conversationHistory.length === 0 ? (
-              <p className="text-brand-muted text-sm text-center py-8 font-body">No hay mensajes aún</p>
-            ) : (
-              conversationHistory.slice(-3).map((message) => (
-                <div
-                  key={message.id}
-                  className={`p-3.5 rounded-soft ${message.type === 'user'
-                    ? 'bg-brand-teal/10 text-brand-teal border border-brand-teal/15'
-                    : 'bg-brand-cream text-brand-ink border border-brand-mist'
-                    }`}
-                >
-                  <p className="text-sm font-body leading-relaxed">{message.text}</p>
-                  <p className="text-xs mt-1.5 opacity-50 font-body">
-                    {new Date(message.timestamp).toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' })}
-                  </p>
-                </div>
-              ))
-            )}
-          </div>
+        {/* Dots loading */}
+        <div className="flex gap-2 mb-5">
+          <div className="w-3 h-3 rounded-full bg-brand-orange animate-dot-bounce" />
+          <div className="w-3 h-3 rounded-full bg-brand-orange animate-dot-bounce" style={{ animationDelay: '0.2s' }} />
+          <div className="w-3 h-3 rounded-full bg-brand-orange animate-dot-bounce" style={{ animationDelay: '0.4s' }} />
         </div>
+
+        <button
+          onClick={() => navigate('/lsm/captura')}
+          className="btn-press px-8 py-3.5 bg-transparent text-brand-muted text-[14px] font-semibold border border-muted rounded-soft hover:bg-muted hover:text-brand-ink transition-colors"
+        >
+          Cancelar
+        </button>
+
+        {error && (
+          <div className="mt-5 px-4 py-3 bg-brand-softRed border border-brand-softRedBorder text-brand-red text-sm rounded-soft max-w-md">
+            <p className="font-bold mb-1">Error en el procesamiento</p>
+            <p className="text-xs">{error}</p>
+          </div>
+        )}
       </div>
+
+      <BottomIndicator />
     </div>
   );
 };

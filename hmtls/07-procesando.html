@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=834,initial-scale=1,user-scalable=no"/>
+<title>Procesando — Señas a Voces Academy</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+:root{
+  --bg:#FDFBF7;--card:#FFFFFF;--muted:#EFECE6;
+  --primary:#E0702B;--secondary:#7C4023;--teal:#11525A;
+  --text:#2A323D;--text-muted:#6B7280;
+  --radius:20px;--radius-sm:12px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:834px;height:1194px;overflow:hidden;font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased}
+
+.status-bar{height:54px;padding:14px 24px 0;display:flex;justify-content:space-between;align-items:center;font-size:15px;font-weight:600}
+.status-bar .time{font-weight:700}
+.status-bar .icons{display:flex;gap:8px;align-items:center}
+.status-bar .icons svg{width:18px;height:18px}
+
+.content{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 48px;height:calc(1194px - 54px - 34px);text-align:center}
+
+.screen-label{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--text-muted);margin-bottom:32px}
+
+.spinner-ring{width:80px;height:80px;position:relative;margin-bottom:32px}
+.spinner-ring .ring{position:absolute;inset:0;border-radius:50%;border:4px solid var(--muted)}
+.spinner-ring .ring-fill{position:absolute;inset:0;border-radius:50%;border:4px solid transparent;border-top-color:var(--primary);border-right-color:var(--primary);animation:spin 1.2s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.spinner-ring .center-dot{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:16px;height:16px;border-radius:50%;background:var(--primary);animation:pulse 1.5s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:translate(-50%,-50%) scale(1)}50%{opacity:.5;transform:translate(-50%,-50%) scale(.8)}}
+
+.title{font-size:28px;font-weight:800;letter-spacing:-.03em;margin-bottom:8px}
+.subtitle{font-size:16px;color:var(--text-muted);margin-bottom:40px;max-width:400px;line-height:1.5}
+
+.steps{display:flex;flex-direction:column;gap:12px;width:100%;max-width:420px;margin-bottom:40px}
+.step{display:flex;align-items:center;gap:14px;padding:16px 20px;background:var(--card);border:1px solid var(--muted);border-radius:var(--radius-sm);text-align:left;transition:all .3s}
+.step.active{border-color:var(--primary);background:#FEF3EC}
+.step.done{border-color:#16A34A;background:#ECFDF5}
+.step .icon{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px;font-weight:700}
+.step .icon.pending{background:var(--muted);color:var(--text-muted)}
+.step .icon.active{background:var(--primary);color:#fff}
+.step .icon.done{background:#16A34A;color:#fff}
+.step .text{flex:1}
+.step .text h4{font-size:14px;font-weight:700;margin-bottom:2px}
+.step .text p{font-size:12px;color:var(--text-muted)}
+.step .check{width:20px;height:20px;display:flex;align-items:center;justify-content:center}
+.step .check svg{width:16px;height:16px;color:#16A34A}
+
+.dots-loading{display:flex;gap:8px;margin-bottom:20px}
+.dots-loading .dot{width:12px;height:12px;border-radius:50%;background:var(--primary);animation:dotBounce 1.4s ease-in-out infinite}
+.dots-loading .dot:nth-child(2){animation-delay:.2s}
+.dots-loading .dot:nth-child(3){animation-delay:.4s}
+@keyframes dotBounce{0%,80%,100%{transform:scale(.6);opacity:.4}40%{transform:scale(1);opacity:1}}
+
+.cancel-btn{padding:14px 32px;background:transparent;color:var(--text-muted);font-size:14px;font-weight:600;border:1px solid var(--muted);border-radius:var(--radius-sm);cursor:pointer;transition:all .15s}
+.cancel-btn:hover{background:var(--muted);color:var(--text)}
+
+.bottom-indicator{position:absolute;bottom:10px;left:50%;transform:translateX(-50%);width:134px;height:5px;background:#2A323D;border-radius:999px}
+</style>
+</head>
+<body>
+
+<div class="status-bar">
+  <span class="time">9:43</span>
+  <span class="icons">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12.55a11 11 0 0114.08 0M1.42 9a16 16 0 0121.16 0M8.53 16.11a6 6 0 016.95 0M12 20h.01"/></svg>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="6" width="18" height="12" rx="2"/><line x1="23" y1="13" x2="23" y2="11"/></svg>
+  </span>
+</div>
+
+<div class="content">
+  <div class="screen-label">Satélite — Procesando</div>
+
+  <div class="spinner-ring">
+    <div class="ring"></div>
+    <div class="ring-fill"></div>
+    <div class="center-dot"></div>
+  </div>
+
+  <h1 class="title">Procesando...</h1>
+  <p class="subtitle">Estamos interpretando sus señas y preparando la respuesta. Esto solo tomará un momento.</p>
+
+  <div class="steps">
+    <div class="step done" id="step1">
+      <div class="icon done">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+      </div>
+      <div class="text">
+        <h4>Señas capturadas</h4>
+        <p>Cámara procesó el movimiento correctamente</p>
+      </div>
+      <div class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg></div>
+    </div>
+    <div class="step active" id="step2">
+      <div class="icon active">2</div>
+      <div class="text">
+        <h4>Interpretando lenguaje</h4>
+        <p>Analizando gestos y convirtiendo a texto</p>
+      </div>
+    </div>
+    <div class="step" id="step3">
+      <div class="icon pending">3</div>
+      <div class="text">
+        <h4>Generando respuesta</h4>
+        <p>Preparando la frase traducida</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="dots-loading">
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+  </div>
+
+  <button class="cancel-btn" onclick="this.textContent='Cancelado'">Cancelar</button>
+</div>
+
+<div class="bottom-indicator"></div>
+
+<script>
+// Auto-advance steps
+(function(){
+  var steps=document.querySelectorAll('.step');
+  var current=1;
+  setInterval(function(){
+    if(current>=steps.length)return;
+    steps[current].classList.remove('active');
+    steps[current].classList.add('done');
+    steps[current].querySelector('.icon').className='icon done';
+    steps[current].querySelector('.icon').innerHTML='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>';
+    current++;
+    if(current<steps.length){
+      steps[current].classList.add('active');
+      steps[current].querySelector('.icon').className='icon active';
+    }
+  },2000);
+})();
+</script>
+</body>
+</html>

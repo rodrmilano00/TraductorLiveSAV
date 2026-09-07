@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=834,initial-scale=1,user-scalable=no"/>
+<title>Confirmación de Frase — Señas a Voces Academy</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+:root{
+  --bg:#FDFBF7;--card:#FFFFFF;--muted:#EFECE6;
+  --primary:#E0702B;--secondary:#7C4023;--teal:#11525A;
+  --text:#2A323D;--text-muted:#6B7280;
+  --radius:20px;--radius-sm:12px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:834px;height:1194px;overflow:hidden;font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased}
+
+.status-bar{height:54px;padding:14px 24px 0;display:flex;justify-content:space-between;align-items:center;font-size:15px;font-weight:600}
+.status-bar .time{font-weight:700}
+.status-bar .icons{display:flex;gap:8px;align-items:center}
+.status-bar .icons svg{width:18px;height:18px}
+
+.content{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 48px;height:calc(1194px - 54px - 34px);text-align:center}
+
+.screen-label{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--teal);margin-bottom:16px}
+
+.success-icon{width:88px;height:88px;border-radius:50%;background:#ECFDF5;display:flex;align-items:center;justify-content:center;margin-bottom:28px;animation:scaleIn .4s cubic-bezier(.34,1.56,.64,1)}
+@keyframes scaleIn{from{transform:scale(0);opacity:0}to{transform:scale(1);opacity:1}}
+.success-icon svg{width:44px;height:44px;color:#16A34A;stroke-dasharray:100;stroke-dashoffset:100;animation:draw .6s .3s forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+
+.title{font-size:28px;font-weight:800;letter-spacing:-.03em;margin-bottom:8px}
+.title .highlight{color:#16A34A}
+
+.subtitle{font-size:16px;color:var(--text-muted);margin-bottom:32px;max-width:400px;line-height:1.5}
+
+.phrase-display{width:100%;max-width:520px;background:var(--card);border:2px solid #ECFDF5;border-radius:var(--radius);padding:28px 32px;margin-bottom:32px;position:relative}
+.phrase-display::before{content:'';position:absolute;left:0;top:16px;bottom:16px;width:4px;background:#16A34A;border-radius:2px}
+.phrase-label{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text-muted);margin-bottom:10px;text-align:left}
+.phrase-text{font-size:24px;font-weight:600;line-height:1.4;text-align:left}
+
+.confirmed-by{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:36px;font-size:13px;color:var(--text-muted)}
+.confirmed-by .avatar{width:28px;height:28px;border-radius:50%;background:var(--teal);color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700}
+
+.actions{display:flex;gap:12px;width:100%;max-width:520px}
+.btn{flex:1;padding:18px;border:none;border-radius:var(--radius-sm);font-size:16px;font-weight:700;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px}
+.btn-continue{background:#16A34A;color:#fff;box-shadow:0 4px 16px rgba(22,163,74,.25)}
+.btn-continue:hover{box-shadow:0 6px 24px rgba(22,163,74,.35);transform:translateY(-1px)}
+.btn-back{background:var(--muted);color:var(--text)}
+.btn-back:hover{background:#E5E2DB}
+
+.timeline{display:flex;align-items:center;gap:8px;margin-top:40px;padding:12px 20px;background:var(--card);border:1px solid var(--muted);border-radius:999px}
+.timeline .step{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700}
+.timeline .step.done{background:#ECFDF5;color:#16A34A}
+.timeline .step.current{background:var(--primary);color:#fff}
+.timeline .step.pending{background:var(--muted);color:var(--text-muted)}
+.timeline .line{width:24px;height:2px;background:var(--muted)}
+.timeline .line.done{background:#16A34A}
+
+.bottom-indicator{position:absolute;bottom:10px;left:50%;transform:translateX(-50%);width:134px;height:5px;background:#2A323D;border-radius:999px}
+</style>
+</head>
+<body>
+
+<div class="status-bar">
+  <span class="time">9:42</span>
+  <span class="icons">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12.55a11 11 0 0114.08 0M1.42 9a16 16 0 0121.16 0M8.53 16.11a6 6 0 016.95 0M12 20h.01"/></svg>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="6" width="18" height="12" rx="2"/><line x1="23" y1="13" x2="23" y2="11"/></svg>
+  </span>
+</div>
+
+<div class="content">
+  <div class="screen-label">Pantalla 05</div>
+
+  <div class="success-icon">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+  </div>
+
+  <h1 class="title">Frase <span class="highlight">confirmada</span></h1>
+  <p class="subtitle">La frase ha sido registrada exitosamente y será enviada al cliente para su comprensión.</p>
+
+  <div class="phrase-display">
+    <div class="phrase-label">Frase confirmada</div>
+    <div class="phrase-text">"Su pedido será atendido en breve, por favor espere un momento mientras verificamos la disponibilidad"</div>
+  </div>
+
+  <div class="confirmed-by">
+    <div class="avatar">MC</div>
+    Confirmado por María C. — Trabajadora
+  </div>
+
+  <div class="actions">
+    <button class="btn btn-back">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+      Volver
+    </button>
+    <button class="btn btn-continue" onclick="this.innerHTML='<svg width=18 height=18 viewBox=\'0 0 24 24\' fill=none stroke=currentColor stroke-width=2.5><polyline points=\'20 6 9 17 4 12\'/></svg> Enviado'">
+      Continuar
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+    </button>
+  </div>
+
+  <div class="timeline">
+    <div class="step done">1</div>
+    <div class="line done"></div>
+    <div class="step done">2</div>
+    <div class="line done"></div>
+    <div class="step done">3</div>
+    <div class="line done"></div>
+    <div class="step current">4</div>
+    <div class="line"></div>
+    <div class="step pending">5</div>
+  </div>
+</div>
+
+<div class="bottom-indicator"></div>
+
+</body>
+</html>
