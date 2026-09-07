@@ -27,45 +27,37 @@ const VoiceInputScreen: React.FC = () => {
 
   const handleConfirm = () => {
     if (transcript.trim()) {
-      // Add to conversation history
       addConversationMessage({
         type: 'user',
         text: transcript
       });
-      
-      // Set current phrase for LSM translation
       setCurrentPhrase(transcript);
-      
-      // Navigate to LSM translation flow
       navigate('/lsm/frase');
     }
   };
 
   const handleRetry = () => {
     setIsConfirming(false);
-    // transcript will be cleared by starting new recording
   };
 
   if (!isSupported) {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-brand-cream">
         <Header />
-        <div className="flex items-center justify-center h-[calc(100vh-80px)]">
-          <div className="bg-white rounded-xl shadow-md p-8 max-w-lg text-center">
-            <div className="bg-red-100 p-4 rounded-full mx-auto mb-4 w-16 h-16 flex items-center justify-center">
-              <svg className="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div className="flex items-center justify-center min-h-[calc(100vh-80px)] p-8">
+          <div className="surface-card p-10 max-w-lg text-center animate-scaleIn">
+            <div className="mx-auto mb-5 w-16 h-16 rounded-full bg-brand-red/15 flex items-center justify-center">
+              <svg className="w-8 h-8 text-brand-red" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
               </svg>
             </div>
-            <h2 className="text-2xl font-bold text-gray-800 mb-4">
-              Navegador no compatible
-            </h2>
-            <p className="text-gray-600 mb-6">
+            <h2 className="text-2xl font-bold text-brand-ink mb-3 font-display">Navegador no compatible</h2>
+            <p className="text-brand-muted mb-6 font-body leading-relaxed">
               Su navegador no soporta reconocimiento de voz. Por favor use Google Chrome, Microsoft Edge, o Safari para continuar.
             </p>
             <button
               onClick={() => navigate('/')}
-              className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-lg"
+              className="btn-premium bg-brand-teal hover:bg-brand-deep text-white font-semibold px-6 py-3 rounded-soft font-body"
             >
               Volver al inicio
             </button>
@@ -77,102 +69,112 @@ const VoiceInputScreen: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-brand-cream">
-      <Header 
+      <Header
         showConversation={true}
         onConversationToggle={() => setShowConversation(!showConversation)}
       />
-      
-      <ConversationPanel 
-        messages={[]} // Empty for now, will be populated after confirmation
+
+      <ConversationPanel
+        messages={[]}
         isOpen={showConversation}
         onClose={() => setShowConversation(false)}
       />
 
-      <div className="flex h-[calc(100vh-80px)]">
-        {/* Left/Center panel - Voice input */}
+      <div className="flex min-h-[calc(100vh-72px)]">
+        {/* Center - Voice input */}
         <div className="flex-1 p-8 flex items-center justify-center">
           <div className="w-full max-w-2xl">
             {!isConfirming ? (
-              /* Recording state */
-              <div className="bg-white rounded-soft shadow-soft p-8 text-center">
-                <h2 className="text-2xl font-bold text-brand-ink mb-6 font-display">
+              <div className="surface-card p-9 text-center animate-fade">
+                <p className="card-eyebrow mb-2">Paso 2 · Entrada de voz</p>
+                <h2 className="text-2xl font-extrabold text-brand-ink mb-7 font-display">
                   Hable para traducir
                 </h2>
-                
-                <div className="mb-8">
+
+                {/* Mic button */}
+                <div className="mb-7">
                   <button
                     onClick={isRecording ? handleStopRecording : handleStartRecording}
-                    className={`w-32 h-32 rounded-full flex items-center justify-center mx-auto transition-all duration-200 ${
-                      isRecording 
-                        ? 'bg-brand-red hover:bg-brand-red/90 animate-pulse' 
-                        : 'bg-brand-teal hover:bg-brand-deep'
-                    }`}
+                    className={`record-button btn-press w-36 h-36 rounded-full flex items-center justify-center mx-auto transition-all duration-300 ${isRecording
+                      ? 'bg-brand-red hover:bg-brand-red/90 is-recording ring-8 ring-brand-red/20'
+                      : 'bg-gradient-to-br from-brand-teal to-brand-deep hover:shadow-glow ring-8 ring-brand-teal/15'
+                      }`}
+                    aria-label={isRecording ? 'Detener grabación' : 'Iniciar grabación'}
                   >
                     {isRecording ? (
-                      <svg className="w-16 h-16 text-white" fill="currentColor" viewBox="0 0 24 24">
-                        <rect x="6" y="6" width="12" height="12" rx="2" />
+                      <svg className="w-14 h-14 text-white" fill="currentColor" viewBox="0 0 24 24">
+                        <rect x="6" y="6" width="12" height="12" rx="3" />
                       </svg>
                     ) : (
-                      <svg className="w-16 h-16 text-white" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/>
-                        <path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/>
+                      <svg className="w-14 h-14 text-white" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z" />
+                        <path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z" />
                       </svg>
                     )}
                   </button>
                 </div>
 
                 <div className="flex items-center justify-center mb-6">
-                  <StatusIndicator type="recording" />
+                  <StatusIndicator type="recording" text={isRecording ? 'Grabando audio...' : 'Listo para grabar'} />
                 </div>
 
                 {transcript && (
-                  <div className="bg-brand-cream rounded-lg p-4 mb-4">
-                    <p className="text-brand-ink text-lg font-body">{transcript}</p>
+                  <div className="bg-brand-cream border border-brand-mist rounded-soft p-5 mb-4 text-left">
+                    <p className="card-eyebrow mb-1.5">Transcripción</p>
+                    <p className="text-brand-ink text-lg font-body leading-relaxed">{transcript}</p>
                   </div>
                 )}
 
                 {error && (
-                  <div className="bg-brand-red/10 border border-brand-red text-brand-red px-4 py-3 rounded-lg mb-4">
-                    {error}
+                  <div className="bg-brand-red/10 border border-brand-red/30 text-brand-red px-4 py-3 rounded-soft mb-4 flex items-center gap-2">
+                    <svg className="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                    </svg>
+                    <span className="text-sm font-body">{error}</span>
                   </div>
                 )}
 
                 <p className="text-brand-muted text-sm font-body">
-                  {isRecording ? 'Presione para detener la grabación' : 'Presione para comenzar a grabar'}
+                  {isRecording ? 'Presione el botón para detener la grabación' : 'Presione el botón para comenzar a grabar'}
                 </p>
               </div>
             ) : (
               /* Confirmation state */
-              <div className="bg-white rounded-soft shadow-soft p-8 text-center">
-                <h2 className="text-2xl font-bold text-brand-ink mb-6 font-display">
-                  Confirmar transcripción
+              <div className="surface-card p-9 text-center animate-scaleIn">
+                <p className="card-eyebrow mb-2">Confirmar transcripción</p>
+                <h2 className="text-2xl font-extrabold text-brand-ink mb-6 font-display">
+                  ¿Es correcto?
                 </h2>
 
-                <div className="bg-brand-teal/10 border-2 border-brand-teal rounded-lg p-6 mb-6">
-                  <p className="text-xl text-brand-ink font-medium font-body">
+                <div className="bg-brand-teal/8 border-2 border-brand-teal/20 rounded-softer p-7 mb-6">
+                  <p className="text-xl text-brand-ink font-medium font-body leading-relaxed">
                     "{transcript}"
                   </p>
                 </div>
 
-                <div className="flex items-center justify-center mb-6">
+                <div className="flex items-center justify-center mb-7">
                   <StatusIndicator type="confirming" />
                 </div>
 
                 <div className="flex gap-4 justify-center">
                   <button
                     onClick={handleRetry}
-                    className="bg-brand-muted hover:bg-brand-soft text-white font-semibold px-8 py-4 rounded-soft transition-colors min-h-[64px] font-body"
-                    style={{ minHeight: '64px' }}
+                    className="btn-press bg-white border-2 border-brand-mist hover:border-brand-soft text-brand-ink font-semibold px-8 py-4 rounded-soft transition-colors min-h-[64px] font-body inline-flex items-center gap-2"
                   >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                    </svg>
                     Reintentar
                   </button>
-                  
+
                   <button
                     onClick={handleConfirm}
-                    className="bg-brand-teal hover:bg-brand-deep text-white font-semibold px-8 py-4 rounded-soft transition-colors min-h-[64px] font-display"
-                    style={{ minHeight: '64px' }}
+                    className="btn-premium bg-brand-teal hover:bg-brand-deep text-white font-semibold px-8 py-4 rounded-soft min-h-[64px] font-display inline-flex items-center gap-2"
                   >
                     Confirmar
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+                    </svg>
                   </button>
                 </div>
               </div>
@@ -180,27 +182,27 @@ const VoiceInputScreen: React.FC = () => {
           </div>
         </div>
 
-        {/* Right panel - Selected category preview */}
-        <div className="w-80 bg-white border-l border-brand-mist p-6">
-          <h3 className="text-lg font-semibold text-brand-ink mb-4 font-display">
-            Trámite seleccionado
-          </h3>
-          {selectedCategory && (
-            <div className="bg-brand-cream rounded-lg p-4">
+        {/* Right - Category preview */}
+        <div className="w-80 bg-white/60 border-l border-brand-mist p-6 backdrop-blur-sm">
+          <p className="card-eyebrow mb-3">Trámite seleccionado</p>
+          {selectedCategory ? (
+            <div className="surface-card p-5">
               <div className="flex items-center gap-3 mb-3">
-                <div className="bg-brand-teal/10 p-2 rounded-lg">
+                <div className="bg-gradient-to-br from-brand-teal/12 to-brand-cyan/8 p-2.5 rounded-soft">
                   <svg className="w-6 h-6 text-brand-teal" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                   </svg>
                 </div>
-                <h4 className="font-semibold text-brand-ink font-display">
+                <h4 className="font-bold text-brand-ink font-display leading-tight">
                   {selectedCategory.name}
                 </h4>
               </div>
-              <p className="text-sm text-brand-muted font-body">
+              <p className="text-sm text-brand-muted font-body leading-relaxed">
                 {selectedCategory.description}
               </p>
             </div>
+          ) : (
+            <p className="text-brand-muted text-sm font-body">Sin categoría seleccionada</p>
           )}
         </div>
       </div>

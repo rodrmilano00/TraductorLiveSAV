@@ -31,11 +31,19 @@ export default {
       },
       borderRadius: {
         'soft': '16px',
-        'softer': '24px'
+        'softer': '24px',
+        'pill': '999px'
       },
       boxShadow: {
-        soft: "0 20px 60px rgba(26, 46, 53, 0.09)"
+        soft: "0 20px 60px rgba(26, 46, 53, 0.09)",
+        card: "0 1px 3px rgba(0, 0, 0, 0.05)",
+        lift: "0 8px 24px rgba(26, 46, 59, 0.10)",
+        glow: "0 0 24px rgba(42, 171, 184, 0.35)"
+      },
+      backgroundImage: {
+        'wave-soft': "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 120' preserveAspectRatio='none'%3E%3Cpath d='M0 60 C 200 100, 400 20, 600 60 C 800 100, 1000 20, 1200 60 L 1200 120 L 0 120 Z' fill='%230D5C6F' fill-opacity='0.06'/%3E%3C/svg%3E\")"
       }
     },
   },
-}
+  plugins: []
+};
