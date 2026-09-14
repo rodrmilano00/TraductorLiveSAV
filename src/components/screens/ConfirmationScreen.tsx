@@ -28,7 +28,7 @@ const ConfirmationScreen: React.FC = () => {
           </svg>
         </div>
 
-        <h1 className="text-[28px] font-extrabold mb-2" style={{ letterSpacing: '-.03em' }}>
+        <h1 className="font-display text-[28px] font-extrabold mb-2 text-ink" style={{ letterSpacing: '-.03em' }}>
           Frase <span className="text-success">confirmada</span>
         </h1>
         <p className="text-[16px] text-text-muted mb-8 max-w-[400px]" style={{ lineHeight: '1.5' }}>
@@ -66,7 +66,7 @@ const ConfirmationScreen: React.FC = () => {
           <button
             onClick={() => navigate('/senas')}
             className="btn-press flex-1 py-[18px] bg-success text-white text-[16px] font-bold rounded-soft flex items-center justify-center gap-2"
-            style={{ boxShadow: '0 4px 16px rgba(22,163,74,.25)' }}
+            style={{ boxShadow: '0 4px 16px rgba(13,92,111,.25)' }}
           >
             Continuar
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>

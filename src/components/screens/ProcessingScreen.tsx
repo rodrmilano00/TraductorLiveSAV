@@ -41,7 +41,7 @@ const ProcessingScreen: React.FC = () => {
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-4 h-4 rounded-full bg-primary animate-pulse-opacity" />
         </div>
 
-        <h1 className="text-[28px] font-extrabold mb-2" style={{ letterSpacing: '-.03em' }}>Procesando...</h1>
+        <h1 className="font-display text-[28px] font-extrabold mb-2 text-ink" style={{ letterSpacing: '-.03em' }}>Procesando...</h1>
         <p className="text-[16px] text-text-muted mb-10 max-w-[400px]" style={{ lineHeight: '1.5' }}>
           Estamos interpretando sus señas y preparando la respuesta. Esto solo tomará un momento.
         </p>
@@ -54,7 +54,7 @@ const ProcessingScreen: React.FC = () => {
             return (
               <div
                 key={i}
-                className={`flex items-center gap-3.5 px-5 py-4 bg-card border rounded-soft text-left transition-all ${
+                className={`flex items-center gap-3.5 px-5 py-4 surface-card text-left transition-all ${
                   isActive ? 'border-primary bg-soft-orange' :
                   isDone ? 'border-success bg-success-bg' :
                   'border-muted'
@@ -72,7 +72,7 @@ const ProcessingScreen: React.FC = () => {
                   ) : i + 1}
                 </div>
                 <div className="flex-1">
-                  <h4 className="text-[14px] font-bold mb-0.5">{step.title}</h4>
+                  <h4 className="font-display text-[14px] font-bold mb-0.5 text-ink">{step.title}</h4>
                   <p className="text-[12px] text-text-muted">{step.desc}</p>
                 </div>
                 {isDone && (

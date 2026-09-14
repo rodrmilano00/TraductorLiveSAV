@@ -19,7 +19,7 @@ const VoiceInputScreen: React.FC = () => {
             <div className="w-7 h-3.5 border-2 border-text-muted rounded-[3px]" />
             Modo trabajador — Tableta rotada
           </div>
-          <div className="text-[11px] font-bold uppercase text-primary mb-2" style={{ letterSpacing: '.1em' }}>Pantalla 04</div>
+          <div className="text-[11px] font-bold uppercase text-secondary mb-2" style={{ letterSpacing: '.1em' }}>Pantalla 04</div>
 
           {/* Recording badge */}
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-red-bg border border-red-border rounded-pill text-[13px] font-bold text-red mb-4 w-fit">
@@ -46,7 +46,7 @@ const VoiceInputScreen: React.FC = () => {
             <button
               onClick={() => navigate('/confirmacion')}
               className="btn-press flex-[1.5] py-3.5 px-6 bg-teal text-white text-[15px] font-bold rounded-soft flex items-center justify-center gap-2"
-              style={{ boxShadow: '0 4px 16px rgba(17,82,90,.2)' }}
+              style={{ boxShadow: '0 4px 16px rgba(13,92,111,.2)' }}
             >
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5}>
                 <polyline points="20 6 9 17 4 12" />
@@ -65,7 +65,7 @@ const VoiceInputScreen: React.FC = () => {
         {/* Right panel */}
         <div className="flex flex-col pl-5 overflow-y-auto">
           <div className="text-[11px] font-bold uppercase text-teal mb-2" style={{ letterSpacing: '.1em' }}>Vista del trabajador</div>
-          <h2 className="text-[22px] font-bold mb-1">Entrada por voz</h2>
+          <h2 className="font-display text-[22px] font-bold mb-1 text-ink">Entrada por voz</h2>
           <p className="text-[14px] text-text-muted mb-5">Hable para transcribir su respuesta al cliente.</p>
 
           {/* History card */}

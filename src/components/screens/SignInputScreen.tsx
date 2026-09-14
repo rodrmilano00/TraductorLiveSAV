@@ -37,8 +37,8 @@ const SignInputScreen: React.FC = () => {
       <StatusBar />
 
       <div className="flex-1 flex flex-col px-8 pt-5 pb-10 overflow-y-auto">
-        <div className="text-[12px] font-bold uppercase text-primary mb-2" style={{ letterSpacing: '.1em' }}>Pantalla 06</div>
-        <h1 className="text-[26px] font-extrabold mb-1" style={{ letterSpacing: '-.03em' }}>
+        <div className="text-xs font-bold uppercase text-secondary mb-2" style={{ letterSpacing: '.1em' }}>Pantalla 06</div>
+        <h1 className="font-display text-[26px] font-extrabold mb-1 text-ink" style={{ letterSpacing: '-.03em' }}>
           Entrada de <span className="text-primary">Señas</span>
         </h1>
         <p className="text-[15px] text-text-muted mb-5">Realice señas frente a la cámara para comunicarse con el trabajador.</p>
@@ -65,8 +65,8 @@ const SignInputScreen: React.FC = () => {
               <line x1="70" y1="75" x2="120" y2="100" stroke="rgba(255,255,255,.4)" strokeWidth="2" strokeLinecap="round" />
               <line x1="70" y1="150" x2="30" y2="240" stroke="rgba(255,255,255,.4)" strokeWidth="2" strokeLinecap="round" />
               <line x1="70" y1="150" x2="110" y2="240" stroke="rgba(255,255,255,.4)" strokeWidth="2" strokeLinecap="round" />
-              <circle cx="20" cy="120" r="6" fill="rgba(224,112,43,.5)" />
-              <circle cx="120" cy="100" r="6" fill="rgba(224,112,43,.5)" />
+              <circle cx="20" cy="120" r="6" fill="rgba(217,119,54,.5)" />
+              <circle cx="120" cy="100" r="6" fill="rgba(217,119,54,.5)" />
             </svg>
 
             {/* Bottom overlay */}
@@ -90,7 +90,7 @@ const SignInputScreen: React.FC = () => {
             <div className="w-full h-2 bg-muted rounded-[4px] overflow-hidden">
               <div
                 className="h-full rounded-[4px] transition-all duration-300"
-                style={{ width: `${progress}%`, background: 'linear-gradient(90deg, #E0702B, #7C4023)' }}
+                style={{ width: `${progress}%`, background: 'linear-gradient(90deg, #D97736, #8C4A27)' }}
               />
             </div>
           </div>
@@ -110,7 +110,7 @@ const SignInputScreen: React.FC = () => {
         {/* Guide card */}
         <div className="bg-card border border-muted rounded-card py-5 px-6 mb-5">
           <h3 className="text-[15px] font-bold mb-3 flex items-center gap-2">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#E0702B" strokeWidth={2}>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#D97736" strokeWidth={2}>
               <circle cx="12" cy="12" r="10" />
               <line x1="12" y1="16" x2="12" y2="12" />
               <line x1="12" y1="8" x2="12.01" y2="8" />
@@ -146,7 +146,7 @@ const SignInputScreen: React.FC = () => {
           <button
             onClick={() => navigate('/procesando')}
             className="btn-press flex-1 py-4 bg-success text-white text-[15px] font-bold rounded-soft flex items-center justify-center gap-2"
-            style={{ boxShadow: '0 4px 16px rgba(22,163,74,.2)' }}
+            style={{ boxShadow: '0 4px 16px rgba(13,92,111,.2)' }}
           >
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5}>
               <polyline points="20 6 9 17 4 12" />

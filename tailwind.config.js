@@ -4,30 +4,51 @@ export default {
   theme: {
     extend: {
       colors: {
-        bg: '#FDFBF7',
+        // Brand palette from SenasAVoces
+        brand: {
+          cream: '#FAF7ED',
+          teal: '#0D5C6F',
+          deep: '#083D48',
+          card: '#0C4A57',
+          line: '#1A5C6A',
+          cyan: '#2AABB8',
+          orange: '#EC9960',
+          soft: '#8AACB4',
+          muted: '#5A7A82',
+          mist: '#D4E4E8',
+          ink: '#1A2E35',
+          mint: '#A8D5BA',
+        },
+        // Semantic colors
+        bg: '#F8F5EE',
         card: '#FFFFFF',
-        muted: '#EFECE6',
-        primary: '#E0702B',
-        secondary: '#7C4023',
-        teal: '#11525A',
-        ink: '#2A323D',
-        'text-muted': '#6B7280',
-        success: '#16A34A',
-        'success-bg': '#ECFDF5',
-        red: '#DC2626',
+        muted: '#E8E4D8',
+        primary: '#D97736',
+        secondary: '#8C4A27',
+        teal: '#0D5C6F',
+        ink: '#1A2E3B',
+        'text-muted': '#607274',
+        success: '#0D5C6F',
+        'success-bg': '#E8F5F0',
+        red: '#D96B6B',
         'red-bg': '#FEF2F2',
         'red-border': '#FECACA',
         'soft-orange': '#FEF3EC',
         'soft-orange-border': '#FDDCBA',
         'soft-teal': '#F0F9FA',
+        'progress-track': '#F4EFE6',
       },
       borderRadius: {
         soft: '12px',
-        card: '20px',
+        card: '16px',
         pill: '999px',
       },
       fontFamily: {
-        sans: ['Inter', 'system-ui', 'sans-serif'],
+        sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+        display: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+      },
+      boxShadow: {
+        soft: '0 20px 60px rgba(26, 46, 53, 0.09)',
       },
       keyframes: {
         'wave-anim': {

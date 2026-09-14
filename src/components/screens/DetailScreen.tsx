@@ -31,7 +31,7 @@ const DetailScreen: React.FC = () => {
       <StatusBar />
 
       <div className="flex-1 flex flex-col items-center px-12 pt-8 pb-10 overflow-y-auto">
-        <div className="text-[12px] font-bold uppercase text-primary mb-2 self-start" style={{ letterSpacing: '.1em' }}>Pantalla 03</div>
+        <div className="text-xs font-bold uppercase text-secondary mb-2 self-start" style={{ letterSpacing: '.1em' }}>Pantalla 03</div>
 
         {/* Option badge */}
         <div className="inline-flex items-center gap-2 px-[18px] py-2 bg-soft-orange rounded-pill text-[14px] font-semibold text-primary mb-8 mt-2">
@@ -43,7 +43,7 @@ const DetailScreen: React.FC = () => {
         <div className="w-full bg-card rounded-card border border-muted overflow-hidden mb-6">
           {/* Header */}
           <div className="py-5 px-6 border-b border-muted flex items-center justify-between">
-            <h2 className="text-[20px] font-bold">Reproducción de audio</h2>
+            <h2 className="font-display text-[20px] font-bold text-ink">Reproducción de audio</h2>
             <div className="flex items-center gap-1.5 text-[13px] font-semibold text-success">
               <span className="w-2 h-2 rounded-full bg-success animate-pulse-opacity" />
               En reproducción
@@ -58,7 +58,7 @@ const DetailScreen: React.FC = () => {
               </svg>
             </div>
             <div>
-              <h3 className="text-[16px] font-bold mb-0.5">Opción 3 — Realizar un pedido</h3>
+              <h3 className="font-display text-[16px] font-bold mb-0.5 text-ink">Opción 3 — Realizar un pedido</h3>
               <p className="text-[13px] text-text-muted">Audio generado por el sistema</p>
             </div>
           </div>
@@ -105,7 +105,7 @@ const DetailScreen: React.FC = () => {
           <button
             onClick={() => setIsPlaying(!isPlaying)}
             className="btn-press flex-1 py-[18px] bg-primary text-white text-[16px] font-bold rounded-soft flex items-center justify-center gap-2"
-            style={{ boxShadow: '0 4px 16px rgba(224,112,43,.25)' }}
+            style={{ boxShadow: '0 4px 16px rgba(217,119,54,.25)' }}
           >
             {isPlaying ? (
               <>
@@ -130,7 +130,7 @@ const DetailScreen: React.FC = () => {
         <button
           onClick={() => navigate('/voz')}
           className="btn-press w-full max-w-[400px] mt-6 py-4 bg-teal text-white text-[15px] font-bold rounded-soft"
-          style={{ boxShadow: '0 4px 16px rgba(17,82,90,.2)' }}
+          style={{ boxShadow: '0 4px 16px rgba(13,92,111,.2)' }}
         >
           Continuar
         </button>

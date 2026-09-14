@@ -2,6 +2,7 @@
 import { useNavigate } from 'react-router-dom';
 import StatusBar from '../shared/StatusBar';
 import BottomIndicator from '../shared/BottomIndicator';
+import TopNav from '../shared/TopNav';
 
 const options = [
   { id: 1, title: 'Información general', desc: 'Consultas sobre el establecimiento, horarios o servicios' },
@@ -17,21 +18,12 @@ const CategorySelectionScreen: React.FC = () => {
   return (
     <div className="relative min-h-screen bg-bg flex flex-col overflow-hidden">
       <StatusBar />
-
-      {/* Top nav */}
-      <div className="flex items-center justify-between px-8 py-3 bg-teal shrink-0">
-        <span className="text-white text-[14px] font-bold" style={{ letterSpacing: '.02em' }}>Señas a Voces</span>
-        <div className="flex gap-1">
-          <div className="px-4 py-2 rounded-pill text-[13px] font-semibold bg-white/15 text-white cursor-pointer">Opciones</div>
-          <div className="px-4 py-2 rounded-pill text-[13px] font-semibold text-white/60 cursor-pointer hover:text-white transition-colors">Historial</div>
-          <div className="px-4 py-2 rounded-pill text-[13px] font-semibold text-white/60 cursor-pointer hover:text-white transition-colors">Ayuda</div>
-        </div>
-      </div>
+      <TopNav activeTab="Opciones" />
 
       {/* Content */}
       <div className="flex-1 px-8 pt-8 pb-10 overflow-y-auto">
-        <div className="text-[12px] font-bold uppercase text-primary mb-2" style={{ letterSpacing: '.1em' }}>Pantalla 02</div>
-        <h1 className="text-[34px] font-extrabold mb-1.5" style={{ letterSpacing: '-.03em', lineHeight: '1.2' }}>
+        <div className="text-xs font-bold uppercase text-secondary mb-2" style={{ letterSpacing: '.1em' }}>Pantalla 02</div>
+        <h1 className="font-display text-[34px] font-extrabold mb-1.5 text-ink" style={{ letterSpacing: '-.03em', lineHeight: '1.2' }}>
           ¿Cómo podemos <span className="text-primary">atenderle</span>?
         </h1>
         <p className="text-[16px] text-text-muted mb-8" style={{ lineHeight: '1.5' }}>
@@ -48,8 +40,9 @@ const CategorySelectionScreen: React.FC = () => {
                 selected === opt.id
                   ? 'border-primary bg-soft-orange'
                   : 'border-muted'
-              }`}
-              style={selected === opt.id ? { boxShadow: '0 2px 12px rgba(224,112,43,.1)' } : {}}
+              }`
+              }
+              style={selected === opt.id ? { boxShadow: '0 2px 12px rgba(217,119,54,.1)' } : {}}
             >
               <div className={`w-11 h-11 rounded-full flex items-center justify-center text-[18px] font-extrabold shrink-0 transition-all ${
                 selected === opt.id ? 'bg-primary text-white' : 'bg-muted text-text-muted'
@@ -82,7 +75,7 @@ const CategorySelectionScreen: React.FC = () => {
           <button
             onClick={() => navigate('/detalle')}
             className="btn-press flex-1 py-4 bg-primary text-white text-[15px] font-bold rounded-soft transition-all"
-            style={{ boxShadow: '0 4px 16px rgba(224,112,43,.25)' }}
+            style={{ boxShadow: '0 4px 16px rgba(217,119,54,.25)' }}
           >
             Seleccionar
           </button>
