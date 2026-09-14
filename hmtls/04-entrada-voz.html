@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=1194,initial-scale=1,user-scalable=no"/>
+<title>Entrada de Voz — Señas a Voces Academy</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+:root{
+  --bg:#FDFBF7;--card:#FFFFFF;--muted:#EFECE6;
+  --primary:#E0702B;--secondary:#7C4023;--teal:#11525A;
+  --text:#2A323D;--text-muted:#6B7280;
+  --radius:20px;--radius-sm:12px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1194px;height:834px;overflow:hidden;font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased}
+
+.status-bar{height:44px;padding:10px 24px 0;display:flex;justify-content:space-between;align-items:center;font-size:14px;font-weight:600}
+.status-bar .time{font-weight:700}
+.status-bar .icons{display:flex;gap:8px;align-items:center}
+.status-bar .icons svg{width:16px;height:16px}
+
+.content{display:grid;grid-template-columns:1fr 1fr;gap:0;height:calc(834px - 44px - 24px);padding:0 24px 24px}
+
+.left-panel{display:flex;flex-direction:column;padding-right:20px;border-right:1px solid var(--muted)}
+.right-panel{display:flex;flex-direction:column;padding-left:20px}
+
+.screen-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--primary);margin-bottom:8px;margin-top:8px}
+
+.recording-badge{display:inline-flex;align-items:center;gap:8px;padding:8px 16px;background:#FEF2F2;border:1px solid #FECACA;border-radius:999px;font-size:13px;font-weight:700;color:#DC2626;margin-bottom:16px;width:fit-content}
+.recording-badge .rec-dot{width:10px;height:10px;border-radius:50%;background:#DC2626;animation:recPulse 1s infinite}
+@keyframes recPulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.8)}}
+
+.spectrum{display:flex;align-items:flex-end;gap:2px;height:100px;padding:12px 0;margin-bottom:16px}
+.spectrum .freq{flex:1;border-radius:2px 2px 0 0;background:var(--teal);animation:freqAnim .8s ease-in-out infinite alternate}
+@keyframes freqAnim{0%{height:4px}100%{height:100%}}
+
+.transcript-card{flex:1;background:var(--card);border:1px solid var(--muted);border-radius:var(--radius);padding:20px;display:flex;flex-direction:column}
+.transcript-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text-muted);margin-bottom:10px}
+.transcript-text{font-size:20px;font-weight:500;line-height:1.6;flex:1}
+.cursor{display:inline-block;width:2px;height:20px;background:var(--teal);margin-left:2px;animation:blink .8s step-end infinite;vertical-align:text-bottom}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+
+.actions{display:flex;gap:10px;margin-top:16px}
+.btn{padding:14px 24px;border:none;border-radius:var(--radius-sm);font-size:15px;font-weight:700;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px}
+.btn-confirm{background:var(--teal);color:#fff;flex:1.5;box-shadow:0 4px 16px rgba(17,82,90,.2)}
+.btn-confirm:hover{box-shadow:0 6px 20px rgba(17,82,90,.3)}
+.btn-secondary{background:var(--muted);color:var(--text);flex:1}
+.btn-secondary:hover{background:#E5E2DB}
+.btn-danger{background:#FEF2F2;color:#DC2626;border:1px solid #FECACA}
+.btn-danger:hover{background:#FEE2E2}
+
+.right-panel h2{font-size:22px;font-weight:700;margin-bottom:4px}
+.right-panel .subtitle{font-size:14px;color:var(--text-muted);margin-bottom:20px}
+
+.history-card{background:var(--card);border:1px solid var(--muted);border-radius:var(--radius);overflow:hidden;margin-bottom:16px;flex:1}
+.history-header{padding:14px 18px;border-bottom:1px solid var(--muted);font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-muted)}
+.history-list{padding:8px}
+.history-item{padding:12px 14px;border-radius:var(--radius-sm);margin-bottom:4px;font-size:14px;line-height:1.5;display:flex;align-items:flex-start;gap:10px}
+.history-item .speaker{font-size:11px;font-weight:700;color:var(--teal);text-transform:uppercase;letter-spacing:.04em;min-width:60px;padding-top:2px}
+.history-item .text{flex:1}
+.history-item.worker{background:#F0F9FA}
+.history-item.client{background:#FEF3EC}
+
+.orientation-badge{display:flex;align-items:center;gap:8px;padding:8px 14px;background:var(--muted);border-radius:999px;font-size:11px;font-weight:600;color:var(--text-muted);width:fit-content;margin-bottom:16px}
+.orientation-badge .icon{width:20px;height:14px;border:2px solid var(--text-muted);border-radius:3px;position:relative}
+.orientation-badge .icon::after{content:'';position:absolute;bottom:-5px;left:50%;transform:translateX(-50%);width:10px;height:3px;background:var(--text-muted);border-radius:0 0 2px 2px}
+.orientation-badge .icon.landscape{width:28px;height:14px}
+
+.bottom-indicator{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);width:134px;height:5px;background:#2A323D;border-radius:999px}
+</style>
+</head>
+<body>
+
+<div class="status-bar">
+  <span class="time">9:42</span>
+  <span class="icons">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12.55a11 11 0 0114.08 0M1.42 9a16 16 0 0121.16 0M8.53 16.11a6 6 0 016.95 0M12 20h.01"/></svg>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="6" width="18" height="12" rx="2"/><line x1="23" y1="13" x2="23" y2="11"/></svg>
+  </span>
+</div>
+
+<div class="content">
+  <div class="left-panel">
+    <div class="orientation-badge">
+      <div class="icon landscape"></div>
+      Modo trabajador — Tableta rotada
+    </div>
+    <div class="screen-label">Pantalla 04</div>
+
+    <div class="recording-badge">
+      <span class="rec-dot"></span>
+      Grabando...
+    </div>
+
+    <div class="spectrum" id="spectrum"></div>
+
+    <div class="transcript-card">
+      <div class="transcript-label">Transcripción en tiempo real</div>
+      <div class="transcript-text" id="transcript">Su pedido será atendido en breve, por favor espere un momento mientras verificamos la disponibilidad<span class="cursor"></span></div>
+    </div>
+
+    <div class="actions">
+      <button class="btn btn-confirm" onclick="this.innerHTML='<svg width=18 height=18 viewBox=\'0 0 24 24\' fill=none stroke=currentColor stroke-width=2.5><polyline points=\'20 6 9 17 4 12\'/></svg> Confirmado'">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+        Confirmar
+      </button>
+      <button class="btn btn-secondary" onclick="this.textContent='Reproduciendo...';setTimeout(()=>this.textContent='Reproducir',1500)">Reproducir</button>
+      <button class="btn btn-danger" onclick="this.textContent='Detenido';setTimeout(()=>this.textContent='Terminar',1000)">Terminar</button>
+    </div>
+  </div>
+
+  <div class="right-panel">
+    <div class="screen-label" style="color:var(--teal)">Vista del trabajador</div>
+    <h2>Entrada por voz</h2>
+    <p class="subtitle">Hable para transcribir su respuesta al cliente.</p>
+
+    <div class="history-card">
+      <div class="history-header">Conversación</div>
+      <div class="history-list">
+        <div class="history-item client">
+          <span class="speaker">Cliente</span>
+          <span class="text">"Realizar un pedido para llevar, por favor"</span>
+        </div>
+        <div class="history-item worker">
+          <span class="speaker">Trabajador</span>
+          <span class="text">"Su pedido será atendido en breve..."</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="orientation-badge">
+      <div class="icon landscape"></div>
+      La tableta está orientada horizontalmente para el trabajador
+    </div>
+  </div>
+</div>
+
+<div class="bottom-indicator"></div>
+
+<script>
+(function(){
+  var s=document.getElementById('spectrum');
+  for(var i=0;i<24;i++){
+    var f=document.createElement('div');
+    f.className='freq';
+    f.style.animationDelay=(i*0.04)+'s';
+    s.appendChild(f);
+  }
+})();
+</script>
+</body>
+</html>

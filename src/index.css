@@ -1,24 +1,75 @@
-@tailwind base;
+﻿@tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Landscape-only enforcement for tablet kiosk */
-@media (orientation: portrait) {
-  body::before {
-    content: "Por favor, rote su dispositivo a horizontal (landscape)";
-    position: fixed;
-    top: 0;
-    left: 0;
+@layer base {
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  html, body, #root {
+    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    background: #F8F5EE;
+    color: #1A2E3B;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: geometricPrecision;
+  }
+  #root {
     width: 100%;
-    height: 100%;
-    background: #000;
-    color: #fff;
+    min-height: 100vh;
+    overflow: hidden;
+  }
+}
+
+@layer utilities {
+  .btn-press {
+    transition: transform 160ms cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+  }
+  .btn-press:active {
+    transform: scale(0.97);
+  }
+  .btn-press:hover {
+    transform: translateY(-1px);
+  }
+  .font-display {
+    letter-spacing: -0.012em;
+  }
+  .surface-card {
+    border: 1px solid #E8E4D8;
+    background: #FFFFFF;
+    border-radius: 16px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    transition: border-color 220ms cubic-bezier(0.23, 1, 0.32, 1), background 220ms, transform 220ms;
+  }
+  .surface-card:hover {
+    border-color: rgba(140, 74, 39, 0.35);
+    box-shadow: 0 4px 14px rgba(26, 46, 59, 0.08);
+  }
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #E8E4D8; border-radius: 3px; }
+
+/* Landscape enforcement for voice screen */
+@media (orientation: portrait) {
+  .force-landscape {
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 9999;
-    font-size: 24px;
-    text-align: center;
-    padding: 20px;
+    background: #0D5C6F;
+    color: #fff;
   }
+  .force-landscape::before {
+    content: 'Rote la tableta a posición horizontal';
+    font-size: 18px;
+    font-weight: 600;
+  }
+  .force-landscape > * { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation-duration: 0.01ms !important; }
 }

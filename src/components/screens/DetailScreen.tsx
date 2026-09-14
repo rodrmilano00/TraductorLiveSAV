@@ -1,111 +1,132 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAppContext } from '../../contexts/AppContext';
-import StatusIndicator from '../shared/StatusIndicator';
+import Waveform from '../shared/Waveform';
 
 const DetailScreen: React.FC = () => {
   const navigate = useNavigate();
-  const { selectedCategory } = useAppContext();
   const [isPlaying, setIsPlaying] = useState(true);
+  const [progress, setProgress] = useState(45);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   useEffect(() => {
-    // Simulate video/content playback
-    const timer = setTimeout(() => {
-      setIsPlaying(false);
-    }, 3000); // 3 seconds simulated playback
+    if (isPlaying) {
+      intervalRef.current = setInterval(() => {
+        setProgress((p) => {
+          const next = p + 0.5;
+          return next > 100 ? 0 : next;
+        });
+      }, 200);
+    } else if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+    }
+    return () => { if (intervalRef.current) clearInterval(intervalRef.current); };
+  }, [isPlaying]);
 
-    return () => clearTimeout(timer);
-  }, []);
-
-  const handleContinue = () => {
-    navigate('/voz');
-  };
-
-  if (!selectedCategory) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <p className="text-xl text-gray-600 mb-4">No se seleccionó ninguna categoría</p>
-          <button
-            onClick={() => navigate('/categorias')}
-            className="bg-blue-600 text-white px-6 py-3 rounded-lg"
-          >
-            Volver a categorías
-          </button>
-        </div>
-      </div>
-    );
-  }
+  const currentTime = `0:0${Math.floor(progress * 5 / 100)}`;
 
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
-      <div className="max-w-4xl mx-auto">
-        {/* Header section with category details */}
-        <div className="bg-white rounded-xl shadow-md p-8 mb-6">
-          <div className="flex items-center gap-4 mb-4">
-            <div className="bg-blue-100 p-4 rounded-lg">
-              <svg className="w-12 h-12 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-              </svg>
-            </div>
-            <div>
-              <h1 className="text-3xl font-bold text-gray-800 mb-2">
-                {selectedCategory.name}
-              </h1>
-              <p className="text-lg text-gray-600">
-                {selectedCategory.description}
-              </p>
-            </div>
+    <div className="flex-1 flex flex-col items-center justify-center px-8 pb-8 overflow-y-auto">
+      {/* Option badge */}
+      <div className="inline-flex items-center gap-2 px-4 py-2 bg-soft-orange rounded-pill text-sm font-semibold text-primary mb-6">
+        <span className="w-2.5 h-2.5 rounded-full bg-primary animate-pulse-opacity" />
+        Opción 3 — Reproduciendo
+      </div>
+
+      {/* Player card */}
+      <div className="w-full max-w-[600px] bg-card rounded-card border border-muted overflow-hidden mb-6">
+        {/* Header */}
+        <div className="py-5 px-6 border-b border-muted flex items-center justify-between">
+          <h2 className="font-display text-xl font-bold text-ink">Reproducción de audio</h2>
+          <div className="flex items-center gap-1.5 text-sm font-semibold text-success">
+            <span className="w-2 h-2 rounded-full bg-success animate-pulse-opacity" />
+            En reproducción
           </div>
         </div>
 
-        {/* Main content box with playback status */}
-        <div className="bg-white rounded-xl shadow-md p-8">
-          <div className="mb-6">
-            <h2 className="text-2xl font-semibold text-gray-800 mb-4">
-              Información del trámite
-            </h2>
-            
-            {/* Simulated video/content preview area */}
-            <div className="bg-gray-100 rounded-lg p-8 mb-6 min-h-[300px] flex items-center justify-center">
-              <div className="text-center">
-                <div className="bg-blue-600 p-6 rounded-full mx-auto mb-4 w-24 h-24 flex items-center justify-center">
-                  <svg className="w-12 h-12 text-white" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M8 5v14l11-7z"/>
-                  </svg>
-                </div>
-                <p className="text-gray-600 text-lg">
-                  {isPlaying ? 'Reproduciendo video informativo...' : 'Video completado'}
-                </p>
-              </div>
-            </div>
-
-            {/* Status indicator */}
-            <div className="flex items-center justify-center mb-6">
-              <StatusIndicator type="playing" text={isPlaying ? "Reproduciendo..." : "Completado"} />
-            </div>
-
-            <div className="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-r-lg">
-              <p className="text-gray-700">
-                Este es un video explicativo sobre los requisitos y pasos para realizar el trámite de 
-                <strong> {selectedCategory.name}</strong>. Por favor revise la información antes de continuar.
-              </p>
-            </div>
+        {/* Visual */}
+        <div className="py-5 px-6 flex items-center gap-4 border-b border-muted">
+          <div className="w-12 h-12 rounded-soft bg-soft-orange flex items-center justify-center shrink-0">
+            <svg className="w-6 h-6 text-primary" viewBox="0 0 24 24" fill="currentColor">
+              <polygon points="5 3 19 12 5 21 5 3" />
+            </svg>
           </div>
+          <div>
+            <h3 className="font-display text-base font-bold mb-0.5 text-ink">Opción 3 — Realizar un pedido</h3>
+            <p className="text-sm text-text-muted">Audio generado por el sistema</p>
+          </div>
+        </div>
 
-          {/* Continue button */}
-          <div className="flex justify-center">
-            <button
-              onClick={handleContinue}
-              disabled={isPlaying}
-              className="bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white font-bold text-xl px-12 py-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 min-h-[64px]"
-              style={{ minHeight: '64px' }}
-            >
-              Continuar
-            </button>
+        {/* Waveform */}
+        <div className="px-6 pt-6 pb-4">
+          <Waveform isPlaying={isPlaying} />
+        </div>
+
+        {/* Progress bar */}
+        <div className="px-6 pb-5">
+          <div className="w-full h-1.5 bg-muted rounded-[3px] overflow-hidden">
+            <div className="h-full bg-primary rounded-[3px] transition-all duration-300" style={{ width: `${progress}%` }} />
+          </div>
+          <div className="flex justify-between mt-2 text-xs font-semibold text-text-muted tabular-nums">
+            <span>{currentTime}</span>
+            <span>0:05</span>
           </div>
         </div>
       </div>
+
+      {/* Phrase card */}
+      <div className="w-full max-w-[600px] bg-card rounded-card border border-muted p-6 mb-6">
+        <div className="text-xs font-bold uppercase text-text-muted mb-3" style={{ letterSpacing: '.08em' }}>
+          Frase que se está reproduciendo
+        </div>
+        <p className="text-xl font-semibold text-ink" style={{ lineHeight: '1.5', letterSpacing: '-.01em' }}>
+          "Realizar un pedido para llevar, por favor"
+        </p>
+      </div>
+
+      {/* Controls */}
+      <div className="flex gap-3 w-full max-w-[600px]">
+        <button
+          onClick={() => setProgress(0)}
+          className="btn-press flex-1 py-4 bg-muted text-ink text-base font-bold rounded-soft hover:bg-[#E5E2DB] transition-colors flex items-center justify-center gap-2"
+        >
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+            <polyline points="1 4 1 10 7 10" />
+            <path d="M3.51 15a9 9 0 102.13-9.36L1 10" />
+          </svg>
+          Reiniciar
+        </button>
+        <button
+          onClick={() => setIsPlaying(!isPlaying)}
+          className="btn-press flex-1 py-4 bg-primary text-white text-base font-bold rounded-soft flex items-center justify-center gap-2"
+          style={{ boxShadow: '0 4px 16px rgba(217,119,54,.25)' }}
+        >
+          {isPlaying ? (
+            <>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                <rect x="6" y="4" width="4" height="16" />
+                <rect x="14" y="4" width="4" height="16" />
+              </svg>
+              Pausar
+            </>
+          ) : (
+            <>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                <polygon points="5 3 19 12 5 21 5 3" />
+              </svg>
+              Reanudar
+            </>
+          )}
+        </button>
+      </div>
+
+      {/* Continue button */}
+      <button
+        onClick={() => navigate('/voz')}
+        className="btn-press w-full max-w-[600px] mt-4 py-4 bg-teal text-white text-base font-bold rounded-soft"
+        style={{ boxShadow: '0 4px 16px rgba(13,92,111,.2)' }}
+      >
+        Continuar
+      </button>
     </div>
   );
 };

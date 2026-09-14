@@ -1,64 +1,82 @@
-import React from 'react';
+﻿import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAppContext } from '../../contexts/AppContext';
-import type { Category } from '../../types';
+import { useConversation } from '../../context/ConversationContext';
+
+const options = [
+  { id: 1, title: 'Información general', desc: 'Consultas sobre el establecimiento, horarios o servicios' },
+  { id: 2, title: 'Hacer una reserva', desc: 'Reservar mesa, habitación o espacio disponible' },
+  { id: 3, title: 'Realizar un pedido', desc: 'Solicitar alimentos, bebidas o productos' },
+  { id: 4, title: 'Otro servicio', desc: 'Cualquier otra solicitud o necesidad específica' },
+];
 
 const CategorySelectionScreen: React.FC = () => {
   const navigate = useNavigate();
-  const { setSelectedCategory } = useAppContext();
+  const { setCategory } = useConversation();
+  const [selected, setSelected] = useState(1);
 
-  // Sample categories - these could be loaded from an API in the future
-  const categories: Category[] = [
-    { id: '1', name: 'Trámites de Documentación', description: 'Actas, certificados y documentos oficiales' },
-    { id: '2', name: 'Servicios Médicos', description: 'Consultas y servicios de salud' },
-    { id: '3', name: 'Apoyo Social', description: 'Programas de asistencia social' },
-    { id: '4', name: 'Servicios Educativos', description: 'Educación y capacitación' },
-    { id: '5', name: 'Trámites Legales', description: 'Asesoría y trámites legales' },
-    { id: '6', name: 'Otros Servicios', description: 'Consultas generales' },
-  ];
-
-  const handleCategorySelect = (category: Category) => {
-    setSelectedCategory(category);
-    navigate(`/detalle/${category.id}`);
+  const handleSelect = () => {
+    const opt = options.find((o) => o.id === selected);
+    if (opt) setCategory(opt.title);
+    navigate('/conversacion');
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
-      <div className="max-w-6xl mx-auto">
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-gray-800 mb-4">
-            ¿Cómo podemos atenderle?
-          </h1>
-          <p className="text-xl text-gray-600">
-            Seleccione el tipo de trámite o servicio que necesita
-          </p>
-        </div>
+    <div className="flex-1 flex flex-col px-8 pt-8 pb-8 overflow-y-auto">
+      <h1 className="font-display text-3xl sm:text-4xl font-extrabold mb-2 text-ink" style={{ letterSpacing: '-.03em', lineHeight: '1.2' }}>
+        ¿Cómo podemos <span className="text-primary">atenderle</span>?
+      </h1>
+      <p className="text-base text-text-muted mb-8" style={{ lineHeight: '1.5' }}>
+        Seleccione el servicio que necesita para comenzar la atención.
+      </p>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {categories.map((category) => (
-            <button
-              key={category.id}
-              onClick={() => handleCategorySelect(category)}
-              className="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-all duration-200 transform hover:scale-105 border-2 border-transparent hover:border-blue-500 text-left min-h-[120px]"
-            >
-              <div className="flex items-start gap-4">
-                <div className="bg-blue-100 p-3 rounded-lg">
-                  <svg className="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                  </svg>
-                </div>
-                <div className="flex-1">
-                  <h3 className="text-xl font-semibold text-gray-800 mb-2">
-                    {category.name}
-                  </h3>
-                  <p className="text-gray-600 text-sm">
-                    {category.description}
-                  </p>
-                </div>
-              </div>
-            </button>
-          ))}
-        </div>
+      {/* Option list */}
+      <div className="flex flex-col gap-3 mb-8 flex-1">
+        {options.map((opt) => (
+          <div
+            key={opt.id}
+            onClick={() => setSelected(opt.id)}
+            className={`flex items-center gap-4 py-5 px-6 bg-card border-2 rounded-card cursor-pointer transition-all ${
+              selected === opt.id
+                ? 'border-primary bg-soft-orange'
+                : 'border-muted'
+            }`}
+            style={selected === opt.id ? { boxShadow: '0 2px 12px rgba(217,119,54,.1)' } : {}}
+          >
+            <div className={`w-12 h-12 rounded-full flex items-center justify-center text-lg font-extrabold shrink-0 transition-all ${
+              selected === opt.id ? 'bg-primary text-white' : 'bg-muted text-text-muted'
+            }`}>
+              {opt.id}
+            </div>
+            <div className="flex-1">
+              <h3 className="text-lg font-bold mb-0.5 text-ink">{opt.title}</h3>
+              <p className="text-sm text-text-muted">{opt.desc}</p>
+            </div>
+            <div className={`w-7 h-7 rounded-full border-2 flex items-center justify-center shrink-0 transition-all ${
+              selected === opt.id ? 'bg-primary border-primary' : 'border-muted'
+            }`}>
+              {selected === opt.id && (
+                <div className="w-2.5 h-1.5 border-l-2 border-b-2 border-white rotate-[-45deg] -mt-0.5" />
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Bottom buttons */}
+      <div className="flex gap-3">
+        <button
+          onClick={() => navigate('/')}
+          className="btn-press flex-1 py-4 bg-muted text-ink text-base font-semibold rounded-soft hover:bg-[#E5E2DB] transition-colors"
+        >
+          Volver
+        </button>
+        <button
+          onClick={handleSelect}
+          className="btn-press flex-1 py-4 bg-primary text-white text-base font-bold rounded-soft transition-all"
+          style={{ boxShadow: '0 4px 16px rgba(217,119,54,.25)' }}
+        >
+          Iniciar conversación
+        </button>
       </div>
     </div>
   );
