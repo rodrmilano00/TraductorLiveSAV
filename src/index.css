@@ -73,3 +73,50 @@
 @media (prefers-reduced-motion: reduce) {
   * { animation-duration: 0.01ms !important; }
 }
+
+/* Welcome screen sliding phrases */
+@keyframes slide-in-left {
+  0% { opacity: 0; transform: translateX(-60px); }
+  100% { opacity: 1; transform: translateX(0); }
+}
+@keyframes slide-in-right {
+  0% { opacity: 0; transform: translateX(60px); }
+  100% { opacity: 1; transform: translateX(0); }
+}
+@keyframes slide-in-up {
+  0% { opacity: 0; transform: translateY(40px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+@keyframes slide-in-down {
+  0% { opacity: 0; transform: translateY(-40px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+@keyframes float-pulse {
+  0%, 100% { transform: translateY(0) scale(1); opacity: 1; }
+  50% { transform: translateY(-8px) scale(1.05); opacity: 0.85; }
+}
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+@keyframes wave-bounce {
+  0%, 100% { transform: translateY(0); }
+  25% { transform: translateY(-6px); }
+  75% { transform: translateY(6px); }
+}
+
+.slide-in-left { animation: slide-in-left 0.7s cubic-bezier(0.23, 1, 0.32, 1) both; }
+.slide-in-right { animation: slide-in-right 0.7s cubic-bezier(0.23, 1, 0.32, 1) both; }
+.slide-in-up { animation: slide-in-up 0.7s cubic-bezier(0.23, 1, 0.32, 1) both; }
+.slide-in-down { animation: slide-in-down 0.7s cubic-bezier(0.23, 1, 0.32, 1) both; }
+.float-pulse { animation: float-pulse 3s ease-in-out infinite; }
+.wave-bounce { animation: wave-bounce 1.5s ease-in-out infinite; }
+
+.shimmer-text {
+  background: linear-gradient(90deg, #1A2E3B 0%, #D97736 25%, #0D5C6F 50%, #D97736 75%, #1A2E3B 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmer 4s linear infinite;
+}
