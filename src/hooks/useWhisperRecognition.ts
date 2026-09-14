@@ -4,6 +4,7 @@ interface WhisperRecognitionHook {
   transcript: string;
   interimTranscript: string;
   isListening: boolean;
+  isTranscribing: boolean;
   isModelLoading: boolean;
   isModelReady: boolean;
   modelProgress: number;
@@ -14,9 +15,9 @@ interface WhisperRecognitionHook {
   reset: () => void;
 }
 
-const SILENCE_THRESHOLD = 0.008;
-const SILENCE_DURATION = 1200; // ms of silence before transcribing
-const MAX_CHUNK_DURATION = 8000; // max 8s before forced transcribe
+const SILENCE_THRESHOLD = 0.006;
+const SILENCE_DURATION = 700; // ms of silence before transcribing — faster response
+const MAX_CHUNK_DURATION = 5000; // max 5s before forced transcribe — shorter = faster
 const TARGET_SAMPLE_RATE = 16000;
 
 function resampleAudio(input: Float32Array, fromRate: number, toRate: number): Float32Array {
@@ -38,6 +39,7 @@ export const useWhisperRecognition = (): WhisperRecognitionHook => {
   const [transcript, setTranscript] = useState('');
   const [interimTranscript, setInterimTranscript] = useState('');
   const [isListening, setIsListening] = useState(false);
+  const [isTranscribing, setIsTranscribingState] = useState(false);
   const [isModelLoading, setIsModelLoading] = useState(true);
   const [isModelReady, setIsModelReady] = useState(false);
   const [modelProgress, setModelProgress] = useState(0);
@@ -88,6 +90,7 @@ export const useWhisperRecognition = (): WhisperRecognitionHook => {
       } else if (type === 'result') {
         console.log('[Whisper hook] Transcription result:', text);
         isTranscribingRef.current = false;
+        setIsTranscribingState(false);
         setInterimTranscript('');
         if (text && text.trim()) {
           setTranscript((prev) => (prev + ' ' + text.trim()).trim());
@@ -95,6 +98,7 @@ export const useWhisperRecognition = (): WhisperRecognitionHook => {
       } else if (type === 'error') {
         console.error('[Whisper hook] Worker error:', err);
         isTranscribingRef.current = false;
+        setIsTranscribingState(false);
         setInterimTranscript('');
         setError(`Error de Whisper: ${err}`);
       }
@@ -152,7 +156,8 @@ export const useWhisperRecognition = (): WhisperRecognitionHook => {
     }
 
     isTranscribingRef.current = true;
-    setInterimTranscript('Transcribiendo...');
+    setIsTranscribingState(true);
+    setInterimTranscript('Procesando audio...');
 
     // Merge all chunks
     const totalLength = chunksRef.current.reduce((acc, c) => acc + c.length, 0);
@@ -205,7 +210,10 @@ export const useWhisperRecognition = (): WhisperRecognitionHook => {
         const chunkTime = Date.now() - chunkStartTimeRef.current;
 
         // Transcribe on silence after speech, or after max chunk duration
-        if (hasSpeechRef.current && (
+        const chunkSamples = chunksRef.current.reduce((a, c) => a + c.length, 0);
+        const chunkSeconds = chunkSamples / (audioCtxRef.current?.sampleRate || 44100);
+
+        if (hasSpeechRef.current && chunkSeconds > 0.3 && (
           (silenceTime > SILENCE_DURATION && chunksRef.current.length > 0) ||
           (chunkTime > MAX_CHUNK_DURATION && chunksRef.current.length > 0)
         )) {
@@ -236,7 +244,6 @@ export const useWhisperRecognition = (): WhisperRecognitionHook => {
     }
 
     setError(null);
-    setTranscript('');
     setInterimTranscript('');
     chunksRef.current = [];
     totalSamplesRef.current = 0;
@@ -341,6 +348,7 @@ export const useWhisperRecognition = (): WhisperRecognitionHook => {
     transcript,
     interimTranscript,
     isListening,
+    isTranscribing,
     isModelLoading,
     isModelReady,
     modelProgress,

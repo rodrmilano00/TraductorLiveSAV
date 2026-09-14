@@ -61,8 +61,8 @@ self.onmessage = async (e: MessageEvent) => {
       const output = await model(audio, {
         language: language || 'spanish',
         task: 'transcribe',
-        chunk_length_s: 30,
-        stride_length_s: 5,
+        chunk_length_s: 10,
+        stride_length_s: 2,
         return_timestamps: false,
       });
 

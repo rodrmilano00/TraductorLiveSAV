@@ -9,7 +9,7 @@ interface VoiceInputPanelProps {
 
 const VoiceInputPanel: React.FC<VoiceInputPanelProps> = ({ onConfirm }) => {
   const {
-    transcript, interimTranscript, isListening, isModelLoading, isModelReady, modelProgress,
+    transcript, interimTranscript, isListening, isTranscribing, isModelLoading, isModelReady, modelProgress,
     error, frequencyData, start, stop, reset,
   } = useWhisperRecognition();
   const { devices, selectedDeviceId, setSelectedDeviceId, requestPermissions } = useAudioDevices();
@@ -72,23 +72,27 @@ const VoiceInputPanel: React.FC<VoiceInputPanelProps> = ({ onConfirm }) => {
             <div className="absolute inset-0 rounded-full border-2 border-muted" />
             <div className="absolute inset-0 rounded-full border-2 border-transparent border-t-teal border-r-teal animate-spin-slow" />
           </div>
-          <span>Cargando modelo Whisper... {modelProgress > 0 && `${modelProgress}%`}</span>
+          <span>Inicializando reconocimiento de voz... {modelProgress > 0 && `${modelProgress}%`}</span>
         </div>
       )}
 
       {/* Recording status + device selector */}
       <div className="flex items-center gap-3 mb-4">
         <div className={`inline-flex items-center gap-2.5 px-5 py-3 rounded-pill text-base font-bold ${
-          isListening
-            ? 'bg-red-bg border border-red-border text-red'
-            : 'bg-muted text-text-muted'
+          isTranscribing
+            ? 'bg-soft-teal border border-teal text-teal'
+            : isListening
+              ? 'bg-red-bg border border-red-border text-red'
+              : 'bg-muted text-text-muted'
         }`}>
-          <span className={`w-3 h-3 rounded-full ${isListening ? 'bg-red animate-rec-pulse' : 'bg-text-muted'}`} />
-          {isListening ? 'Escuchando...' : 'Pausado'}
+          <span className={`w-3 h-3 rounded-full ${
+            isTranscribing ? 'bg-teal animate-spin-slow' : isListening ? 'bg-red animate-rec-pulse' : 'bg-text-muted'
+          }`} />
+          {isTranscribing ? 'Procesando...' : isListening ? 'Escuchando...' : 'Pausado'}
         </div>
         <button
           onClick={handleToggleRecording}
-          disabled={isModelLoading}
+          disabled={isModelLoading || isTranscribing}
           className="px-5 py-3 bg-muted text-ink text-base font-bold rounded-soft hover:bg-[#E5E2DB] transition-colors disabled:opacity-50"
         >
           {isListening ? 'Pausar' : 'Reanudar'}
@@ -158,8 +162,8 @@ const VoiceInputPanel: React.FC<VoiceInputPanelProps> = ({ onConfirm }) => {
         </div>
       )}
 
-      {/* Spectrum — live audio */}
-      {isListening && (
+      {/* Spectrum — live audio (show while listening or processing) */}
+      {(isListening || isTranscribing) && (
         <div className="py-6">
           <Spectrum frequencyData={frequencyData} />
         </div>
@@ -167,16 +171,31 @@ const VoiceInputPanel: React.FC<VoiceInputPanelProps> = ({ onConfirm }) => {
 
       {/* Transcript */}
       <div className="flex-1 bg-card border border-muted rounded-card p-6 flex flex-col min-h-[180px]">
-        <div className="text-sm font-bold uppercase text-text-muted mb-3" style={{ letterSpacing: '.08em' }}>
-          Transcripción en tiempo real
+        <div className="flex items-center justify-between mb-3">
+          <div className="text-sm font-bold uppercase text-text-muted" style={{ letterSpacing: '.08em' }}>
+            Transcripción
+          </div>
+          {isTranscribing && (
+            <div className="flex items-center gap-2 text-xs font-semibold text-teal">
+              <div className="flex gap-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-teal animate-bounce" style={{ animationDelay: '0ms' }} />
+                <span className="w-1.5 h-1.5 rounded-full bg-teal animate-bounce" style={{ animationDelay: '150ms' }} />
+                <span className="w-1.5 h-1.5 rounded-full bg-teal animate-bounce" style={{ animationDelay: '300ms' }} />
+              </div>
+              Procesando audio
+            </div>
+          )}
         </div>
         <div className="text-2xl font-medium flex-1 text-ink" style={{ lineHeight: '1.7' }}>
           {transcript}
           {interimTranscript && (
-            <span className="text-text-muted italic">{interimTranscript}</span>
+            <span className="text-teal italic">{interimTranscript}</span>
           )}
           {isListening && !interimTranscript && (
             <span className="inline-block w-1 h-6 bg-teal ml-0.5 animate-blink align-text-bottom" />
+          )}
+          {!transcript && !interimTranscript && isListening && (
+            <span className="text-text-muted text-lg">Habla ahora... el texto aparecerá aquí</span>
           )}
         </div>
       </div>
