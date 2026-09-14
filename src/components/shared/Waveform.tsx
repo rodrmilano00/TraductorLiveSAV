@@ -1,12 +1,11 @@
-import React, { useMemo } from 'react';
+﻿import React, { useMemo } from 'react';
 
 interface WaveformProps {
   bars?: number;
   isPlaying?: boolean;
-  className?: string;
 }
 
-const Waveform: React.FC<WaveformProps> = ({ bars = 36, isPlaying = true, className = '' }) => {
+const Waveform: React.FC<WaveformProps> = ({ bars = 36, isPlaying = true }) => {
   const barData = useMemo(
     () =>
       Array.from({ length: bars }, (_, i) => ({
@@ -17,11 +16,11 @@ const Waveform: React.FC<WaveformProps> = ({ bars = 36, isPlaying = true, classN
   );
 
   return (
-    <div className={`flex items-center justify-center gap-[3px] h-20 ${className}`}>
+    <div className="flex items-center justify-center gap-[3px] h-20">
       {barData.map((bar, i) => (
         <div
           key={i}
-          className="w-[5px] rounded-[3px] bg-brand-orange animate-wave-anim"
+          className="w-[5px] rounded-[3px] bg-primary animate-wave-anim"
           style={{
             animationDelay: bar.delay,
             height: `${bar.height}px`,

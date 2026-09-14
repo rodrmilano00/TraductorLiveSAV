@@ -1,6 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
-
-@tailwind base;
+﻿@tailwind base;
 @tailwind components;
 @tailwind utilities;
 
@@ -10,84 +8,50 @@
     margin: 0;
     padding: 0;
   }
-
   html, body, #root {
-    min-height: 100%;
-  }
-
-  body {
     font-family: 'Inter', system-ui, sans-serif;
     background: #FDFBF7;
     color: #2A323D;
     -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    text-rendering: geometricPrecision;
+  }
+  #root {
+    width: 100%;
+    min-height: 100vh;
+    overflow: hidden;
   }
 }
 
-/* ─── Button interactions ────────────────────────────────── */
-
-.btn-press {
-  transition: transform 140ms ease-out, background-color 0.18s ease, border-color 0.18s ease, color 0.18s ease, box-shadow 0.18s ease;
+@layer utilities {
+  .btn-press {
+    transition: all .2s;
+  }
+  .btn-press:active {
+    transform: translateY(0);
+  }
 }
 
-.btn-press:active {
-  transform: scale(0.97);
-}
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #EFECE6; border-radius: 3px; }
 
-.btn-press:hover {
-  transform: translateY(-1px);
-}
-
-button:focus-visible,
-a:focus-visible {
-  outline: 2px solid rgba(224, 112, 43, 0.5);
-  outline-offset: 2px;
-}
-
-/* ─── Scrollbar ──────────────────────────────────────────── */
-
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-::-webkit-scrollbar-thumb {
-  background: rgba(42, 50, 61, 0.15);
-  border-radius: 8px;
-}
-
-/* ─── Landscape-only enforcement ─────────────────────────── */
-
+/* Landscape enforcement for voice screen */
 @media (orientation: portrait) {
-  body::before {
-    content: "Por favor, rote su dispositivo a horizontal (landscape)";
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: #11525A;
-    color: #fff;
+  .force-landscape {
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 9999;
-    font-size: 20px;
-    text-align: center;
-    padding: 20px;
-    font-family: 'Inter', system-ui, sans-serif;
+    background: #11525A;
+    color: #fff;
   }
+  .force-landscape::before {
+    content: 'Rote la tableta a posición horizontal';
+    font-size: 18px;
+    font-weight: 600;
+  }
+  .force-landscape > * { display: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-  }
+  * { animation-duration: 0.01ms !important; }
 }
