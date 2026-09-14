@@ -1,7 +1,5 @@
 ﻿import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import StatusBar from '../shared/StatusBar';
-import BottomIndicator from '../shared/BottomIndicator';
 
 const ProcessingScreen: React.FC = () => {
   const navigate = useNavigate();
@@ -28,79 +26,64 @@ const ProcessingScreen: React.FC = () => {
   ];
 
   return (
-    <div className="relative min-h-screen bg-bg flex flex-col overflow-hidden">
-      <StatusBar />
-
-      <div className="flex-1 flex flex-col items-center justify-center px-12 pt-10 pb-10 text-center">
-        <div className="text-[12px] font-bold uppercase text-text-muted mb-8" style={{ letterSpacing: '.1em' }}>Satélite — Procesando</div>
-
-        {/* Spinner ring */}
-        <div className="relative w-20 h-20 mb-8">
-          <div className="absolute inset-0 rounded-full border-4 border-muted" />
-          <div className="absolute inset-0 rounded-full border-4 border-transparent border-t-primary border-r-primary animate-spin-slow" />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-4 h-4 rounded-full bg-primary animate-pulse-opacity" />
-        </div>
-
-        <h1 className="font-display text-[28px] font-extrabold mb-2 text-ink" style={{ letterSpacing: '-.03em' }}>Procesando...</h1>
-        <p className="text-[16px] text-text-muted mb-10 max-w-[400px]" style={{ lineHeight: '1.5' }}>
-          Estamos interpretando sus señas y preparando la respuesta. Esto solo tomará un momento.
-        </p>
-
-        {/* Steps */}
-        <div className="flex flex-col gap-3 w-full max-w-[420px] mb-10">
-          {steps.map((step, i) => {
-            const isDone = i < currentStep;
-            const isActive = i === currentStep;
-            return (
-              <div
-                key={i}
-                className={`flex items-center gap-3.5 px-5 py-4 surface-card text-left transition-all ${
-                  isActive ? 'border-primary bg-soft-orange' :
-                  isDone ? 'border-success bg-success-bg' :
-                  'border-muted'
-                }`}
-              >
-                <div className={`w-9 h-9 rounded-full flex items-center justify-center shrink-0 text-[14px] font-bold ${
-                  isDone ? 'bg-success text-white' :
-                  isActive ? 'bg-primary text-white' :
-                  'bg-muted text-text-muted'
-                }`}>
-                  {isDone ? (
-                    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={3}>
-                      <polyline points="20 6 9 17 4 12" strokeLinecap="round" strokeLinejoin="round" />
-                    </svg>
-                  ) : i + 1}
-                </div>
-                <div className="flex-1">
-                  <h4 className="font-display text-[14px] font-bold mb-0.5 text-ink">{step.title}</h4>
-                  <p className="text-[12px] text-text-muted">{step.desc}</p>
-                </div>
-                {isDone && (
-                  <svg className="w-4 h-4 text-success" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
-                    <polyline points="20 6 9 17 4 12" strokeLinecap="round" strokeLinejoin="round" />
-                  </svg>
-                )}
-              </div>
-            );
-          })}
-        </div>
-
-        {/* Dots loading */}
-        <div className="flex gap-2 mb-5">
-          <div className="w-3 h-3 rounded-full bg-primary animate-dot-bounce" />
-          <div className="w-3 h-3 rounded-full bg-primary animate-dot-bounce" style={{ animationDelay: '0.2s' }} />
-          <div className="w-3 h-3 rounded-full bg-primary animate-dot-bounce" style={{ animationDelay: '0.4s' }} />
-        </div>
-
-        <button
-          onClick={() => navigate('/senas')}
-          className="btn-press px-8 py-3.5 bg-transparent text-text-muted text-[14px] font-semibold border border-muted rounded-soft hover:bg-muted hover:text-ink transition-colors"
-        >
-          Cancelar
-        </button>
+    <div className="flex-1 flex flex-col items-center justify-center px-8 pb-8 text-center">
+      {/* Spinner ring */}
+      <div className="relative w-20 h-20 mb-8">
+        <div className="absolute inset-0 rounded-full border-4 border-muted" />
+        <div className="absolute inset-0 rounded-full border-4 border-transparent border-t-primary border-r-primary animate-spin-slow" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-4 h-4 rounded-full bg-primary animate-pulse-opacity" />
       </div>
 
-      <BottomIndicator />
+      <h1 className="font-display text-3xl font-extrabold mb-2 text-ink" style={{ letterSpacing: '-.03em' }}>Procesando...</h1>
+      <p className="text-base text-text-muted mb-10 max-w-[400px]" style={{ lineHeight: '1.5' }}>
+        Estamos interpretando sus señas y preparando la respuesta. Esto solo tomará un momento.
+      </p>
+
+      {/* Steps */}
+      <div className="flex flex-col gap-3 w-full max-w-[420px] mb-10">
+        {steps.map((step, i) => {
+          const isDone = i < currentStep;
+          const isActive = i === currentStep;
+          return (
+            <div
+              key={i}
+              className={`flex items-center gap-3.5 px-5 py-4 surface-card text-left transition-all ${
+                isActive ? 'border-primary bg-soft-orange' :
+                isDone ? 'border-success bg-success-bg' :
+                'border-muted'
+              }`}
+            >
+              <div className={`w-9 h-9 rounded-full flex items-center justify-center shrink-0 text-sm font-bold ${
+                isDone ? 'bg-success text-white' :
+                isActive ? 'bg-primary text-white' :
+                'bg-muted text-text-muted'
+              }`}>
+                {isDone ? (
+                  <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={3}>
+                    <polyline points="20 6 9 17 4 12" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                ) : i + 1}
+              </div>
+              <div className="flex-1">
+                <h4 className="font-display text-sm font-bold mb-0.5 text-ink">{step.title}</h4>
+                <p className="text-xs text-text-muted">{step.desc}</p>
+              </div>
+              {isDone && (
+                <svg className="w-4 h-4 text-success" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+                  <polyline points="20 6 9 17 4 12" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              )}
+            </div>
+          );
+        })}
+      </div>
+
+      <button
+        onClick={() => navigate('/senas')}
+        className="btn-press px-8 py-3.5 bg-transparent text-text-muted text-sm font-semibold border border-muted rounded-soft hover:bg-muted hover:text-ink transition-colors"
+      >
+        Cancelar
+      </button>
     </div>
   );
 };
