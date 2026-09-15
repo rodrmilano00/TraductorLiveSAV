@@ -27,8 +27,18 @@ interface SignRecognitionHook {
   clearTranscript: () => void;
 }
 
-const STABLE_FRAMES = 8;
-const CONFIDENCE_THRESHOLD = 0.55;
+const STABLE_FRAMES = 5;
+const CONFIDENCE_THRESHOLD = 0.50;
+const DETECT_INTERVAL = 2; // Run detection every N frames
+
+const HAND_CONNECTIONS = [
+  [0,1],[1,2],[2,3],[3,4],
+  [0,5],[5,6],[6,7],[7,8],
+  [5,9],[9,10],[10,11],[11,12],
+  [9,13],[13,14],[14,15],[15,16],
+  [13,17],[17,18],[18,19],[19,20],
+  [0,17],
+];
 
 export const useSignRecognition = (): SignRecognitionHook => {
   const [isCameraActive, setIsCameraActive] = useState(false);
@@ -49,6 +59,8 @@ export const useSignRecognition = (): SignRecognitionHook => {
   const stableBufferRef = useRef<{ sign: string; conf: number }[]>([]);
   const lastConfirmedRef = useRef<string>('');
   const cooldownRef = useRef<number>(0);
+  const frameCountRef = useRef<number>(0);
+  const lastVideoTimeRef = useRef<number>(-1);
 
   // Init MediaPipe HandLandmarker
   useEffect(() => {
@@ -59,13 +71,13 @@ export const useSignRecognition = (): SignRecognitionHook => {
         const landmarker = await HandLandmarker.createFromOptions(vision, {
           baseOptions: {
             modelAssetPath: 'https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task',
-            delegate: 'CPU',
+            delegate: 'GPU',
           },
           runningMode: 'VIDEO',
           numHands: 2,
-          minHandDetectionConfidence: 0.5,
-          minHandPresenceConfidence: 0.5,
-          minTrackingConfidence: 0.5,
+          minHandDetectionConfidence: 0.4,
+          minHandPresenceConfidence: 0.4,
+          minTrackingConfidence: 0.3,
         });
         if (!cancelled) {
           handLandmarkerRef.current = landmarker;
@@ -87,44 +99,40 @@ export const useSignRecognition = (): SignRecognitionHook => {
     };
   }, []);
 
-  // Draw landmarks on canvas
+  // Draw landmarks on canvas (optimized)
   const drawLandmarks = useCallback((landmarks: any[], canvas: HTMLCanvasElement, video: HTMLVideoElement) => {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
-    canvas.width = video.videoWidth || 640;
-    canvas.height = video.videoHeight || 480;
+    const vw = video.videoWidth || 640;
+    const vh = video.videoHeight || 480;
+    if (canvas.width !== vw) canvas.width = vw;
+    if (canvas.height !== vh) canvas.height = vh;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.save();
     ctx.translate(canvas.width, 0);
     ctx.scale(-1, 1);
-    const connections = [
-      [0,1],[1,2],[2,3],[3,4],
-      [0,5],[5,6],[6,7],[7,8],
-      [5,9],[9,10],[10,11],[11,12],
-      [9,13],[13,14],[14,15],[15,16],
-      [13,17],[17,18],[18,19],[19,20],
-      [0,17],
-    ];
     for (const hand of landmarks) {
-      ctx.strokeStyle = 'rgba(13, 92, 111, 0.8)';
+      // Draw connections in a single path
+      ctx.strokeStyle = 'rgba(13, 92, 111, 0.9)';
       ctx.lineWidth = 3;
-      for (const [a, b] of connections) {
-        ctx.beginPath();
+      ctx.beginPath();
+      for (const [a, b] of HAND_CONNECTIONS) {
         ctx.moveTo(hand[a].x * canvas.width, hand[a].y * canvas.height);
         ctx.lineTo(hand[b].x * canvas.width, hand[b].y * canvas.height);
-        ctx.stroke();
       }
-      ctx.fillStyle = 'rgba(217, 119, 54, 0.9)';
+      ctx.stroke();
+      // Draw all points in a single path
+      ctx.fillStyle = 'rgba(217, 119, 54, 0.95)';
       for (const lm of hand) {
-        ctx.beginPath();
+        ctx.moveTo(lm.x * canvas.width + 4, lm.y * canvas.height);
         ctx.arc(lm.x * canvas.width, lm.y * canvas.height, 4, 0, 2 * Math.PI);
-        ctx.fill();
       }
+      ctx.fill();
     }
     ctx.restore();
   }, []);
 
-  // Detection loop
+  // Detection loop (throttled for performance)
   const detectLoop = useCallback(() => {
     const video = videoRef.current;
     const canvas = canvasRef.current;
@@ -133,60 +141,76 @@ export const useSignRecognition = (): SignRecognitionHook => {
       rafRef.current = requestAnimationFrame(detectLoop);
       return;
     }
-    const timestamp = performance.now();
-    const results = landmarker.detectForVideo(video, timestamp);
-    if (canvas && results.landmarks && results.landmarks.length > 0) {
-      drawLandmarks(results.landmarks, canvas, video);
-      const handLandmarks = results.landmarks[0];
-      const states = fingerStates(handLandmarks.map((lm: any) => ({ x: lm.x, y: lm.y, z: lm.z ?? 0 })));
-      if (states) {
-        const [letter, score] = detectBestLetter(states, false);
-        const signName = letter || '';
-        const confidence = score;
-        stableBufferRef.current.push({ sign: signName, conf: confidence });
-        if (stableBufferRef.current.length > STABLE_FRAMES) stableBufferRef.current.shift();
-        if (stableBufferRef.current.length === STABLE_FRAMES && cooldownRef.current <= 0) {
-          const counts: Record<string, number> = {};
-          let totalConf = 0;
-          for (const entry of stableBufferRef.current) {
-            if (entry.sign) {
-              counts[entry.sign] = (counts[entry.sign] || 0) + 1;
-              totalConf += entry.conf;
+
+    frameCountRef.current++;
+    const shouldDetect = frameCountRef.current % DETECT_INTERVAL === 0;
+
+    if (shouldDetect) {
+      // Use video.currentTime to avoid duplicate frame processing
+      if (video.currentTime === lastVideoTimeRef.current) {
+        rafRef.current = requestAnimationFrame(detectLoop);
+        return;
+      }
+      lastVideoTimeRef.current = video.currentTime;
+
+      const timestamp = performance.now();
+      const results = landmarker.detectForVideo(video, timestamp);
+      if (canvas && results.landmarks && results.landmarks.length > 0) {
+        drawLandmarks(results.landmarks, canvas, video);
+        // Detect from the most prominent hand (first result)
+        const handLandmarks = results.landmarks[0];
+        const states = fingerStates(handLandmarks.map((lm: any) => ({ x: lm.x, y: lm.y, z: lm.z ?? 0 })));
+        if (states) {
+          const [letter, score] = detectBestLetter(states, false);
+          const signName = letter || '';
+          const confidence = score;
+          stableBufferRef.current.push({ sign: signName, conf: confidence });
+          if (stableBufferRef.current.length > STABLE_FRAMES) stableBufferRef.current.shift();
+          if (stableBufferRef.current.length === STABLE_FRAMES && cooldownRef.current <= 0) {
+            const counts: Record<string, number> = {};
+            let totalConf = 0;
+            for (const entry of stableBufferRef.current) {
+              if (entry.sign) {
+                counts[entry.sign] = (counts[entry.sign] || 0) + 1;
+                totalConf += entry.conf;
+              }
+            }
+            const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1]);
+            if (sorted.length > 0) {
+              const [bestSign, count] = sorted[0];
+              const avgConf = totalConf / stableBufferRef.current.length;
+              const stabilityRatio = count / STABLE_FRAMES;
+              if (stabilityRatio >= 0.6 && avgConf >= CONFIDENCE_THRESHOLD && bestSign !== lastConfirmedRef.current) {
+                lastConfirmedRef.current = bestSign;
+                cooldownRef.current = 12;
+                const display = formatSignLabel(bestSign);
+                setDetectedSign(display);
+                setDetectedConfidence(Math.round(avgConf * 100));
+                setTranscript((prev) => (prev + ' ' + display).trim());
+                console.log(`[Sign] Detected: ${display} (${Math.round(avgConf * 100)}%)`);
+              } else if (bestSign === lastConfirmedRef.current) {
+                setDetectedSign(formatSignLabel(bestSign));
+                setDetectedConfidence(Math.round(avgConf * 100));
+              }
             }
           }
-          const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1]);
-          if (sorted.length > 0) {
-            const [bestSign, count] = sorted[0];
-            const avgConf = totalConf / stableBufferRef.current.length;
-            const stabilityRatio = count / STABLE_FRAMES;
-            if (stabilityRatio >= 0.7 && avgConf >= CONFIDENCE_THRESHOLD && bestSign !== lastConfirmedRef.current) {
-              lastConfirmedRef.current = bestSign;
-              cooldownRef.current = 20;
-              const display = formatSignLabel(bestSign);
-              setDetectedSign(display);
-              setDetectedConfidence(Math.round(avgConf * 100));
-              setTranscript((prev) => (prev + ' ' + display).trim());
-              console.log(`[Sign] Detected: ${display} (${Math.round(avgConf * 100)}%)`);
-            } else if (bestSign === lastConfirmedRef.current) {
-              setDetectedSign(formatSignLabel(bestSign));
-              setDetectedConfidence(Math.round(avgConf * 100));
-            }
-          }
+          if (cooldownRef.current > 0) cooldownRef.current--;
+        } else {
+          setDetectedSign('');
+          setDetectedConfidence(0);
         }
-        if (cooldownRef.current > 0) cooldownRef.current--;
-      } else {
+      } else if (canvas) {
+        const ctx = canvas.getContext('2d');
+        if (ctx) {
+          const vw = video.videoWidth || 640;
+          const vh = video.videoHeight || 480;
+          if (canvas.width !== vw) canvas.width = vw;
+          if (canvas.height !== vh) canvas.height = vh;
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
         setDetectedSign('');
         setDetectedConfidence(0);
       }
-    } else if (canvas) {
-      const ctx = canvas.getContext('2d');
-      if (ctx) {
-        canvas.width = video.videoWidth || 640;
-        canvas.height = video.videoHeight || 480;
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-      }
-      setDetectedSign('');
-      setDetectedConfidence(0);
     }
     rafRef.current = requestAnimationFrame(detectLoop);
   }, [drawLandmarks]);
@@ -249,10 +273,11 @@ export const useSignRecognition = (): SignRecognitionHook => {
 
     try {
       // Build constraints: use specific device if available, otherwise default
+      const videoConstraints: MediaTrackConstraints = targetDeviceId
+        ? { deviceId: { exact: targetDeviceId }, width: { ideal: 640 }, height: { ideal: 480 }, frameRate: { ideal: 30 } }
+        : { facingMode: 'user', width: { ideal: 640 }, height: { ideal: 480 }, frameRate: { ideal: 30 } };
       const constraints: MediaStreamConstraints = {
-        video: targetDeviceId
-          ? { deviceId: { exact: targetDeviceId } }
-          : { facingMode: 'user' },
+        video: videoConstraints,
         audio: false,
       };
 
@@ -292,7 +317,10 @@ export const useSignRecognition = (): SignRecognitionHook => {
         // Device not found — retry with default constraints
         console.warn('[Camera] Overconstrained, retrying with default...');
         try {
-          const stream2 = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+          const stream2 = await navigator.mediaDevices.getUserMedia({
+            video: { width: { ideal: 640 }, height: { ideal: 480 }, frameRate: { ideal: 30 } },
+            audio: false,
+          });
           streamRef.current = stream2;
           video.srcObject = stream2;
           await video.play();
