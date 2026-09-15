@@ -2,6 +2,7 @@ import { useState, useRef, useEffect, useCallback } from 'react';
 import { HandLandmarker, FilesetResolver } from '@mediapipe/tasks-vision';
 import { fingerStates, detectBestLetter } from '../utils/lsm_detector';
 import { formatSignLabel } from '../data/signLabels';
+import { WordDetector, detectStaticWord } from '../utils/wordGestures';
 
 export interface CameraDevice {
   deviceId: string;
@@ -61,6 +62,8 @@ export const useSignRecognition = (): SignRecognitionHook => {
   const cooldownRef = useRef<number>(0);
   const frameCountRef = useRef<number>(0);
   const lastVideoTimeRef = useRef<number>(-1);
+  const wordDetectorRef = useRef<WordDetector>(new WordDetector());
+  const wordCooldownRef = useRef<number>(0);
 
   // Init MediaPipe HandLandmarker
   useEffect(() => {
@@ -164,6 +167,24 @@ export const useSignRecognition = (): SignRecognitionHook => {
           const [letter, score] = detectBestLetter(states, false);
           const signName = letter || '';
           const confidence = score;
+
+          // Try static word gesture detection (e.g. Hola, Yo, Bien)
+          if (wordCooldownRef.current <= 0) {
+            const handLandmarks = results.landmarks[0];
+            const wordResult = detectStaticWord(states, handLandmarks.map((lm: any) => ({ x: lm.x, y: lm.y, z: lm.z ?? 0 })));
+            if (wordResult && wordResult.confidence >= 0.65) {
+              wordCooldownRef.current = 25;
+              setDetectedSign(wordResult.word);
+              setDetectedConfidence(Math.round(wordResult.confidence * 100));
+              setTranscript((prev) => (prev + ' ' + wordResult.word).trim());
+              console.log(`[Sign] Word gesture: ${wordResult.word} (${Math.round(wordResult.confidence * 100)}%)`);
+              rafRef.current = requestAnimationFrame(detectLoop);
+              return;
+            }
+          }
+          if (wordCooldownRef.current > 0) wordCooldownRef.current--;
+
+          // Letter detection with spelling-to-word matching
           stableBufferRef.current.push({ sign: signName, conf: confidence });
           if (stableBufferRef.current.length > STABLE_FRAMES) stableBufferRef.current.shift();
           if (stableBufferRef.current.length === STABLE_FRAMES && cooldownRef.current <= 0) {
@@ -186,7 +207,24 @@ export const useSignRecognition = (): SignRecognitionHook => {
                 const display = formatSignLabel(bestSign);
                 setDetectedSign(display);
                 setDetectedConfidence(Math.round(avgConf * 100));
-                setTranscript((prev) => (prev + ' ' + display).trim());
+
+                // Try to match spelled letters into a known word
+                const wordMatch = wordDetectorRef.current.addLetter(bestSign);
+                if (wordMatch) {
+                  // Replace recent individual letters with the word
+                  setTranscript((prev) => {
+                    // Remove last N words that match the spelled letters
+                    const words = prev.split(' ');
+                    const wordLen = wordMatch.length;
+                    // Remove last few entries and add the word
+                    const toRemove = Math.min(words.length, wordLen + 2);
+                    const remaining = words.slice(0, words.length - toRemove);
+                    return [...remaining, wordMatch].join(' ').trim();
+                  });
+                  console.log(`[Sign] Spelled word: ${wordMatch}`);
+                } else {
+                  setTranscript((prev) => (prev + ' ' + display).trim());
+                }
                 console.log(`[Sign] Detected: ${display} (${Math.round(avgConf * 100)}%)`);
               } else if (bestSign === lastConfirmedRef.current) {
                 setDetectedSign(formatSignLabel(bestSign));
@@ -298,6 +336,8 @@ export const useSignRecognition = (): SignRecognitionHook => {
       stableBufferRef.current = [];
       lastConfirmedRef.current = '';
       cooldownRef.current = 0;
+      wordDetectorRef.current.reset();
+      wordCooldownRef.current = 0;
       rafRef.current = requestAnimationFrame(detectLoop);
       console.log('[Camera] Started successfully');
     } catch (err: any) {
@@ -328,6 +368,8 @@ export const useSignRecognition = (): SignRecognitionHook => {
           stableBufferRef.current = [];
           lastConfirmedRef.current = '';
           cooldownRef.current = 0;
+          wordDetectorRef.current.reset();
+          wordCooldownRef.current = 0;
           rafRef.current = requestAnimationFrame(detectLoop);
           console.log('[Camera] Started with default constraints');
         } catch (err2: any) {
@@ -365,6 +407,7 @@ export const useSignRecognition = (): SignRecognitionHook => {
   const clearTranscript = useCallback(() => {
     setTranscript('');
     lastConfirmedRef.current = '';
+    wordDetectorRef.current.reset();
   }, []);
 
   const selectDevice = useCallback((deviceId: string) => {
